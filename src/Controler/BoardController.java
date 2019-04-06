@@ -20,6 +20,7 @@ public class BoardController implements  MouseListener, MouseMotionListener{
   private Point end;
   private Move m;
   
+  
     public void addView (BoardView view){
         this.view = view;
     }
@@ -50,7 +51,7 @@ public class BoardController implements  MouseListener, MouseMotionListener{
             if (moveState == 0){
                 System.out.println("Entrou no caso 0.");
                 ini = p;
-                if (clickedOnPiece(e)){
+                if (clickedOnPiece(e) && model.piecesOnTheBoard[ini.x][ini.y].getColor() == model.getTurn()){
                     moveState = 1;
                 }
             }
@@ -59,7 +60,7 @@ public class BoardController implements  MouseListener, MouseMotionListener{
                 end = p;
                 m = new Move(ini, end);
                 System.out.println("ini.x = "+ini.x+", ini.y = "+ini.y+", end.x = "+end.x+", end.y = "+end.y);
-                if (model.piecesOnTheBoard[m.ini.x][m.ini.y].isMovePossible(m)){
+                if (model.isMovePossible(m)){
                     model.makeMove(m);
                 }
                 view.repaint();
@@ -77,7 +78,7 @@ public class BoardController implements  MouseListener, MouseMotionListener{
         int x = e.getX();
         int y = e.getY();
         Point p = Quad(x,y);
-        if (model.piecesOnTheBoard[p.x][p.y].getCor() != Piece.Color.EMPTY){
+        if (model.piecesOnTheBoard[p.x][p.y].getColor() != Piece.Color.EMPTY){
             return true;
         } else {
             return false;

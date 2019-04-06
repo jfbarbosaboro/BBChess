@@ -43,11 +43,7 @@ public abstract class Piece implements IMovable{
         this.square.y = m.end.y;
     }
     
-    public Boolean isMovePossible(Move m){
-        return true;
-    }
-    
-    public Color getCor(){
+    public Color getColor(){
         return this.color;
     }
 }
