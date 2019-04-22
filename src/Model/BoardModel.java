@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 import Controller.BoardController;
 
+
 public class BoardModel implements Observer{
 
     public ArrayList<Piece> whitePieces;
@@ -132,11 +133,11 @@ public class BoardModel implements Observer{
         for (Move M : moves){
             Piece aux = piecesOnTheBoard[M.getIni().x][M.getIni().y];
             piecesOnTheBoard[M.getIni().x][M.getIni().y] = new Empty(Piece.Color.EMPTY, M.getIni().x, M.getIni().y);
-            /*if(piecesOnTheBoard[M.getEnd().x][M.getEnd().y].getColor() == Piece.Color.WHITE){
+            if(piecesOnTheBoard[M.getEnd().x][M.getEnd().y].getColor() == Piece.Color.WHITE){
                 whitePieces.remove(piecesOnTheBoard[M.getEnd().x][M.getEnd().y]);
             } else if (piecesOnTheBoard[M.getEnd().x][M.getEnd().y].getColor() == Piece.Color.BLACK) {
                 blackPieces.remove(piecesOnTheBoard[M.getEnd().x][M.getEnd().y]);
-            }*/
+            }
             aux.listOfPiecesTaken.add(piecesOnTheBoard[M.getEnd().x][M.getEnd().y]);
             piecesOnTheBoard[M.getEnd().x][M.getEnd().y] = aux;
             aux.makeMove(M);
@@ -181,11 +182,11 @@ public class BoardModel implements Observer{
                 this.piecesOnTheBoard[currentSquare.x][currentSquare.y] = this.piecesOnTheBoard[currentSquare.x][currentSquare.y].ancientPiece;
             }
             this.piecesOnTheBoard[currentSquare.x][currentSquare.y] = this.piecesOnTheBoard[currentSquare.x][currentSquare.y].listOfPiecesTaken.remove(this.piecesOnTheBoard[currentSquare.x][currentSquare.y].listOfPiecesTaken.size() - 1);
-            /*if(this.piecesOnTheBoard[currentSquare.x][currentSquare.y].getColor() == Piece.Color.WHITE){
+            if(this.piecesOnTheBoard[currentSquare.x][currentSquare.y].getColor() == Piece.Color.WHITE){
                 whitePieces.add(this.piecesOnTheBoard[currentSquare.x][currentSquare.y]);
             } else if (this.piecesOnTheBoard[currentSquare.x][currentSquare.y].getColor() == Piece.Color.BLACK) {
                 blackPieces.add(this.piecesOnTheBoard[currentSquare.x][currentSquare.y]);
-            }*/
+            }
             lastMoved.undo();
             this.piecesOnTheBoard[lastMoved.getSquare().x][lastMoved.getSquare().y] = lastMoved;
             if (this.lastPiecesMoved.isEmpty()){
@@ -236,6 +237,18 @@ public class BoardModel implements Observer{
             }
         }
     }
+    
+    public ArrayList<Position> getListOfPossibleMovesForPieceIn(Position p) {
+        ArrayList<Position> PossibleMovesForPiece = new ArrayList<Position>(); 
+        for(Move m : listOfPossibleMoves) {
+            if((p.x == m.ini.x)&&(p.y == m.ini.y)) {
+                PossibleMovesForPiece.add(m.end); 
+            }
+        }
+        return PossibleMovesForPiece;
+    }
+    
+    //draw
     
     public void updateListOfPossibleMoves(){
         
