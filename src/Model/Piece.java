@@ -1,14 +1,20 @@
 package Model;
 
+import java.util.ArrayList;
 import java.awt.Graphics2D;
-import java.awt.Point;
+import Model.Position;
 
 public abstract class Piece implements IMovable{
     
-    protected boolean hasBeenMoved = false;
+    protected int numberOfMoves = 0;
     protected Color color;
-    protected Point square;
-    private BoardModel model;
+    protected Position square;
+    protected boolean isPromotedPiece;
+    protected BoardModel model;
+    public ArrayList<Move> listOfCandidateMoves = new ArrayList<Move>();
+    public ArrayList<Move> lastMoves = new ArrayList<Move>();
+    public ArrayList<Piece> listOfPiecesTaken = new ArrayList<Piece>();
+    public Piece ancientPiece;
     
     
     public enum Color{
@@ -17,33 +23,46 @@ public abstract class Piece implements IMovable{
         EMPTY
     }
     
-    public Piece(Color color, int x, int y)  {
+    public Piece(Color color, int x, int y, boolean isPromotedPiece)  {
         this.color = color;
-        this.square = new Point(x,y);
-    }
-    
-    public boolean inSquare(Point p){
-        if(p.x == this.square.x && p.y == this.square.y) return true;
-        else return false;
-    }
-    
-    public void setSquare(int x, int y){
-        this.square.setLocation(x, y);
+        this.square = new Position(x,y);
+        this.isPromotedPiece = isPromotedPiece;
     }
     
     public abstract void draw(Graphics2D g);
+    //public abstract void createListOfCandidateMoves();
     
-    public Point getQuad(){
-        return this.square;
+    public void addModel(BoardModel model){
+        this.model = model;
     }
     
+    public boolean inSquare(Position p){
+        return (p.x == this.square.x && p.y == this.square.y);
+    }
+    
+    public void setSquare(Position p){
+        this.square.setPosition(p.x, p.y);
+    }
+    
+    public Position getSquare(){
+        return square;
+    }
+    
+    @Override
     public void makeMove(Move m){
-        this.hasBeenMoved = true;
-        this.square.x = m.end.x;
-        this.square.y = m.end.y;
+        this.numberOfMoves++;
+        this.lastMoves.add(m);
+        this.square.setPosition(m.end.x, m.end.y);
     }
+    
+    public void undo(){
+        Move lastMove = this.lastMoves.remove(--this.numberOfMoves);
+        this.square.setPosition(lastMove.getIni().x, lastMove.getIni().y);
+    }
+    
+    protected abstract void createListOfCandidateMoves();
     
     public Color getColor(){
-        return this.color;
+        return color;
     }
 }

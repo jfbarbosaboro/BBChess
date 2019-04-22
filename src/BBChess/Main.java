@@ -1,6 +1,6 @@
 package BBChess;
 
-import Controler.BoardController;
+import Controller.BoardController;
 import Model.BoardModel;
 import View.BoardView;
 
@@ -8,19 +8,21 @@ public class Main {
     
   public static void main(String[] args) {
     java.awt.EventQueue.invokeLater(new Runnable() {
-      public void run() {
-          
-        BoardModel model = new BoardModel();
-        BoardView viewBoard = new BoardView(model);
-        BoardController boardController = new BoardController(); 
+        @Override
+        public void run() {
+            BoardModel model = new BoardModel();
+            BoardView view = new BoardView(model);
+            BoardController controller = new BoardController(); 
         
+            view.addController(controller);
         
-        viewBoard.addController(boardController);
-        viewBoard.addModel(model);
-        boardController.addView(viewBoard);
-        boardController.addModel(model);
-        boardController.runBoard();
-      }
+            controller.addView(view);
+            controller.addModel(model);
+            
+            model.addController(controller);
+        
+            controller.runBoard();
+        }
     });
   }
 }

@@ -1,4 +1,4 @@
-package Controler;
+package Controller;
 
 import Model.BoardModel;
 import Model.Move;
@@ -8,16 +8,17 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.Point;
+import Model.Position;
 import Model.Piece;
+import Model.Pawn;
 
-public class BoardController implements  MouseListener, MouseMotionListener{
+public class BoardController implements MouseListener, MouseMotionListener{
 
-  private BoardView view;
-  private BoardModel model;
+  protected BoardView view;
+  protected BoardModel model;
   private static int moveState = 0;
-  private Point ini;
-  private Point end;
+  private Position ini;
+  private Position end;
   private Move m;
   
   
@@ -45,21 +46,26 @@ public class BoardController implements  MouseListener, MouseMotionListener{
 
     @Override
     public void mousePressed(MouseEvent e) {
-        Point p = Quad(e.getX(),e.getY());
+        Position p = Square(e.getX(),e.getY());
         if (e.getButton() == 1){
-            view.getPieceNameLabel().setText(model.getStringOfPieceAt(p.x, p.y));
+            view.getPieceNameLabel().setText(model.getStringOfPieceAt(p.x(), p.y()));
             if (moveState == 0){
-                System.out.println("Entrou no caso 0.");
                 ini = p;
-                if (clickedOnPiece(e) && model.piecesOnTheBoard[ini.x][ini.y].getColor() == model.getTurn()){
+                if (clickedOnPiece(e) && model.piecesOnTheBoard[ini.x()][ini.y()].getColor() == model.getTurn()){
                     moveState = 1;
                 }
             }
             else {
-                System.out.println("Entrou no caso 1.");
                 end = p;
                 m = new Move(ini, end);
-                System.out.println("ini.x = "+ini.x+", ini.y = "+ini.y+", end.x = "+end.x+", end.y = "+end.y);
+                
+                if ((model.piecesOnTheBoard[ini.x()][ini.y()] instanceof Pawn && model.piecesOnTheBoard[ini.x()][ini.y()].getColor() == Piece.Color.WHITE && end.y() == 7)
+                    || (model.piecesOnTheBoard[ini.x()][ini.y()] instanceof Pawn && model.piecesOnTheBoard[ini.x()][ini.y()].getColor() == Piece.Color.BLACK && end.y() == 0)){
+                
+                    m.setPromotionOption(getPromotionType());
+                    
+                }
+                
                 if (model.isMovePossible(m)){
                     model.makeMove(m);
                 }
@@ -68,17 +74,16 @@ public class BoardController implements  MouseListener, MouseMotionListener{
             }
         }
         if (e.getButton() == 3){
-            System.out.println("Entrou no caso 2.");
             moveState = 0;
         }
-        view.getClickLabel().setText("x:"+p.x+"  y:"+p.y+"   -   Square: ["+p.x+","+p.y+"]");
+        view.getClickLabel().setText("x:"+p.x()+"  y:"+p.y()+"   -   Square: ["+p.x()+","+p.y()+"]");
     }
     
     public boolean clickedOnPiece(MouseEvent e){
         int x = e.getX();
         int y = e.getY();
-        Point p = Quad(x,y);
-        if (model.piecesOnTheBoard[p.x][p.y].getColor() != Piece.Color.EMPTY){
+        Position p = Square(x,y);
+        if (model.piecesOnTheBoard[p.x()][p.y()].getColor() != Piece.Color.EMPTY){
             return true;
         } else {
             return false;
@@ -110,14 +115,27 @@ public class BoardController implements  MouseListener, MouseMotionListener{
     public void mouseMoved(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        Point p = Quad(x,y);
-        view.getCoordinateLabel().setText("x:"+x+"  y:"+y+"   -   Square: ["+p.x+","+p.y+"]");
-        view.getMouseCoord().setLocation(x, y);
+        Position p = Square(x,y);
+        view.getCoordinateLabel().setText("x:"+x+"  y:"+y+"   -   Square: ["+p.x()+","+p.y()+"]");
+        view.getMouseCoord(x, y);
         view.repaint();
     }
     
-    private Point Quad(int x, int y){
-        return new Point((x-56)/76, (y-56)/76);
+    private Position Square(int x, int y){
+        return new Position(Math.min((x-56)/76, 7), Math.min(7 - (y-56)/76, 7));
+    }
+    
+    public void undo(){
+        model.undo();
+        view.repaint();
+    }
+    
+    public boolean thereIsNothingToUndo(){
+        return model.thereIsNothingToUndo();
+    }
+    
+    public int getPromotionType(){
+        return 0;
     }
 
 }

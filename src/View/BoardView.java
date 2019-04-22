@@ -1,6 +1,6 @@
 package View;
 
-import Controler.BoardController;
+import Controller.BoardController;
 import Model.BoardModel;
 import Model.Piece;
 import java.awt.BasicStroke;
@@ -9,7 +9,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.Point;
+import Model.Position;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JLabel;
@@ -18,17 +18,15 @@ public class BoardView extends javax.swing.JFrame implements Observer {
 
     
   private Canvas canvas;  
-  private Point mouseCoord;
-  private BoardModel model;
-  private BoardController control;
+  protected Position mouseCoord;
+  protected BoardController controller;
   
   
   public BoardView(BoardModel model) {
     initComponents();
     canvas = new Canvas();
-    mouseCoord = new Point();
+    mouseCoord = new Position();
     canvas.registerObserver(this);
-    this.model = model;
     canvas.registerObserver(model);
     
     Dimension area = new Dimension(jPCanvas.getWidth(), jPCanvas.getHeight());
@@ -38,11 +36,12 @@ public class BoardView extends javax.swing.JFrame implements Observer {
     
   }
 
-    public Point getMouseCoord() {
+    public Position getMouseCoord(int x, int y) {
+        mouseCoord.setPosition(x, y);
         return mouseCoord;
     }
 
-    public void setMouseCoord(Point mouseCoord) {
+    public void setMouseCoord(Position mouseCoord) {
         this.mouseCoord = mouseCoord;
     }
   
@@ -70,23 +69,18 @@ public class BoardView extends javax.swing.JFrame implements Observer {
         this.pieceNameLabel = pieceNameLabel;
     }
     public void addController(BoardController controller){
-        this.control = controller;
+        this.controller = controller;
         jPCanvas.addMouseListener(controller);
         jPCanvas.addMouseMotionListener(controller);
     }
     
-    public void addModel(BoardModel model){
-        this.model = model;
-    }
-    
-  
     public void drawMouseSquare(Graphics2D g) {
         
         int width = 76;
         int height = 76;
         
-        int qx = (mouseCoord.x - 56)/width;
-        int qy = (mouseCoord.y - 56)/height; 
+        int qx = (mouseCoord.x() - 56)/width;
+        int qy = (mouseCoord.y() - 56)/height; 
         
         if (qx > 7){
             qx = 7;
@@ -122,6 +116,7 @@ public class BoardView extends javax.swing.JFrame implements Observer {
         clickLabel = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         pieceNameLabel = new javax.swing.JLabel();
+        undoButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("BBChess");
@@ -152,6 +147,13 @@ public class BoardView extends javax.swing.JFrame implements Observer {
 
         jLabel1.setText("Piece:");
 
+        undoButton.setText("Undo");
+        undoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                undoButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -171,6 +173,8 @@ public class BoardView extends javax.swing.JFrame implements Observer {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pieceNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(55, 55, 55)
+                .addComponent(undoButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -181,15 +185,18 @@ public class BoardView extends javax.swing.JFrame implements Observer {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(coordinateLabel)
-                    .addComponent(jLabel1)
-                    .addComponent(pieceNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(clickLabel))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(coordinateLabel)
+                            .addComponent(jLabel1)
+                            .addComponent(pieceNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(clickLabel)))
+                    .addComponent(undoButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -197,6 +204,14 @@ public class BoardView extends javax.swing.JFrame implements Observer {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void undoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoButtonActionPerformed
+        if (controller.thereIsNothingToUndo()){
+            return;
+        }
+        controller.undo();
+    }//GEN-LAST:event_undoButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel clickLabel;
     private javax.swing.JLabel coordinateLabel;
@@ -205,6 +220,7 @@ public class BoardView extends javax.swing.JFrame implements Observer {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPCanvas;
     private javax.swing.JLabel pieceNameLabel;
+    private javax.swing.JButton undoButton;
     // End of variables declaration//GEN-END:variables
 
     @Override
