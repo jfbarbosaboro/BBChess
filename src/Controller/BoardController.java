@@ -12,6 +12,8 @@ import Model.Position;
 import Model.Piece;
 import Model.Pawn;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.JDialog;
 
 public class BoardController implements MouseListener, MouseMotionListener{
 
@@ -86,17 +88,21 @@ public class BoardController implements MouseListener, MouseMotionListener{
                         if (model.isKingOfColorChecked(Piece.Color.WHITE)){
                             //White was checkmated;
                             System.out.println("White was checkmated.");
+                            JOptionPane.showMessageDialog(null, "White was checkmated!", "BBChess", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             //It's a draw.
                             System.out.println("It's a draw.");
+                            JOptionPane.showMessageDialog(null, "It's a  draw.", "BBChess", JOptionPane.INFORMATION_MESSAGE);
                         }
                     } else {
                         if (model.isKingOfColorChecked(Piece.Color.BLACK)){
                             //Black was checkmated;
                             System.out.println("Black was checkmated.");
+                            JOptionPane.showMessageDialog(null, "Black was checkmated!", "BBChess", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             //It's a draw.
                             System.out.println("It's a draw.");
+                            JOptionPane.showMessageDialog(null, "It's a draw.", "BBChess", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                     model.init();
@@ -169,7 +175,13 @@ public class BoardController implements MouseListener, MouseMotionListener{
     }
     
     public int getPromotionType(){
-        return 0;
+        String[] choices= {"Queen","Rook", "Bishop", "Knight"};
+        int response = JOptionPane.showOptionDialog(null, "Chose a promotion option:", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+        if (response != 0 && response != 1 && response != 2 && response != 3){
+            return 0;
+        } else {
+            return response;
+        }
     }
     
     public Position getIni() {
