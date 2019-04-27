@@ -4,8 +4,9 @@ import java.awt.Graphics2D;
 
 public class Empty extends Piece{
 
-    public Empty(Color color, int x, int y)  {
-        super(color, x, y, false);
+    public Empty(Color color, int x, int y, BoardModel model)  {
+        super(color, x, y, false, model);
+        this.isOnTheBoard = false;
     }
     
     @Override

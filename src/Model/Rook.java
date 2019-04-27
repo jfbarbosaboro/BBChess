@@ -13,8 +13,8 @@ public class Rook extends Piece{
     protected final static String bRookImgPath = "img/pieces/b-rook.png";
     protected static BufferedImage bRookImg = null; 
 
-    public Rook(Piece.Color color, int x, int y, boolean p)  {
-        super(color, x, y, p);
+    public Rook(Piece.Color color, int x, int y, boolean p, BoardModel model)  {
+        super(color, x, y, p, model);
         if(this.color == Piece.Color.BLACK){
             try{
                 bRookImg = ImageIO.read(new File(bRookImgPath));

@@ -13,8 +13,8 @@ public class Bishop extends Piece{
     protected final static String bBishopImgPath = "img/pieces/b-bishop.png";
     protected static BufferedImage bBishopImg = null; 
 
-    public Bishop(Piece.Color color, int x, int y, boolean p)  {
-        super(color, x, y, p);
+    public Bishop(Piece.Color color, int x, int y, boolean p, BoardModel model)  {
+        super(color, x, y, p, model);
         if(this.color == Piece.Color.BLACK){
             try{
                 bBishopImg = ImageIO.read(new File(bBishopImgPath));

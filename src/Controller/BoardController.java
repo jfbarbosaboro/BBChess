@@ -81,6 +81,27 @@ public class BoardController implements MouseListener, MouseMotionListener{
                 
                 model.createListOfPossibleMoves();
                 
+                if (model.listOfPossibleMoves.isEmpty()){
+                    if (model.getTurn() == Piece.Color.WHITE){
+                        if (model.isKingOfColorChecked(Piece.Color.WHITE)){
+                            //White was checkmated;
+                            System.out.println("White was checkmated.");
+                        } else {
+                            //It's a draw.
+                            System.out.println("It's a draw.");
+                        }
+                    } else {
+                        if (model.isKingOfColorChecked(Piece.Color.BLACK)){
+                            //Black was checkmated;
+                            System.out.println("Black was checkmated.");
+                        } else {
+                            //It's a draw.
+                            System.out.println("It's a draw.");
+                        }
+                    }
+                    model.init();
+                }
+                
                 view.repaint();
                 moveState = 0;
             }

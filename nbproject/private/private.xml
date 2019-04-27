@@ -5,18 +5,9 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/oop/BBChess/src/Model/BoardModel.java</file>
-            <file>file:/C:/oop/BBChess/src/Model/Move.java</file>
-            <file>file:/C:/oop/BBChess/src/Model/Knight.java</file>
-            <file>file:/C:/oop/BBChess/src/Model/Bishop.java</file>
-            <file>file:/C:/oop/BBChess/src/View/BoardView.java</file>
-            <file>file:/C:/oop/BBChess/src/Model/Position.java</file>
-            <file>file:/C:/oop/BBChess/src/Controller/BoardController.java</file>
-            <file>file:/C:/oop/BBChess/src/Model/Rook.java</file>
-            <file>file:/C:/oop/BBChess/src/Model/King.java</file>
-            <file>file:/C:/oop/BBChess/src/BBChess/Main.java</file>
-            <file>file:/C:/oop/BBChess/src/Model/Queen.java</file>
-            <file>file:/C:/oop/BBChess/src/Model/Piece.java</file>
             <file>file:/C:/oop/BBChess/src/Model/Pawn.java</file>
+            <file>file:/C:/oop/BBChess/src/View/BoardView.java</file>
+            <file>file:/C:/oop/BBChess/src/Controller/BoardController.java</file>
         </group>
     </open-files>
 </project-private>

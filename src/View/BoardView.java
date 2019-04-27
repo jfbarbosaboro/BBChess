@@ -75,31 +75,6 @@ public class BoardView extends javax.swing.JFrame implements Observer {
         jPCanvas.addMouseMotionListener(controller);
     }
     
-    /*public void drawMouseSquare(Graphics2D g) {
-        
-        int width = 76;
-        int height = 76;
-        
-        int qx = (mouseCoord.x() - 56)/width;
-        int qy = (mouseCoord.y() - 56)/height; 
-        
-        if (qx > 7){
-            qx = 7;
-        }
-        if (qy > 7){
-            qy = 7;
-        }
-        
-            int squareWidth = 76;
-            int squareHeight = 76;
-        
-            g.setColor(Color.decode("0xAAD400"));
-            g.setStroke(new BasicStroke(4));
-            g.drawRect(qx * squareWidth + 58, qy * squareHeight + 58, squareWidth-4, squareHeight-4);
-            g.setColor(Color.BLACK);
-        
-    }*/
-    
     public void drawSquarePerimeter(Graphics2D g, int x, int y, String color) {
         
         if (x > 7){

@@ -23,8 +23,8 @@ public class Queen  extends Piece{
     protected final static String bQueenImgPath = "img/pieces/b-queen.png";
     protected static BufferedImage bQueenImg = null; 
 
-    public Queen(Piece.Color color, int x, int y, boolean p)  {
-        super(color, x, y, p);
+    public Queen(Piece.Color color, int x, int y, boolean p, BoardModel model)  {
+        super(color, x, y, p, model);
         if(this.color == Piece.Color.BLACK){
             try{
                 bQueenImg = ImageIO.read(new File(bQueenImgPath));

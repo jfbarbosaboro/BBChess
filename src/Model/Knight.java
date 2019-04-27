@@ -15,8 +15,8 @@ public class Knight extends Piece{
     protected final static String bKnightImgPath = "img/pieces/b-knight.png";
     protected static BufferedImage bKnightImg = null; 
 
-    public Knight(Piece.Color color, int x, int y, boolean p)  {
-        super(color, x, y, p);
+    public Knight(Piece.Color color, int x, int y, boolean p, BoardModel model)  {
+        super(color, x, y, p, model);
         if(color == Piece.Color.BLACK){
             try{
                 bKnightImg = ImageIO.read(new File(bKnightImgPath));

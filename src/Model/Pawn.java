@@ -17,8 +17,8 @@ public class Pawn extends Piece{
     protected static BufferedImage bPawnImg = null;
     protected ArrayList<Move> possibleMoves;
 
-    public Pawn(Color color, int x, int y){
-        super(color, x, y, false);
+    public Pawn(Color color, int x, int y, BoardModel model){
+        super(color, x, y, false, model);
         if(color == Piece.Color.BLACK){
             try{
                 bPawnImg = ImageIO.read(new File(bPawnImgPath));
@@ -115,12 +115,14 @@ public class Pawn extends Piece{
             if (square.y == 4){
                 if (square.x + 1 < 8 && model.piecesOnTheBoard[square.x+1][square.y] instanceof Pawn
                         && model.piecesOnTheBoard[square.x+1][square.y].getColor() == Color.BLACK
-                        && model.piecesOnTheBoard[square.x+1][square.y].numberOfMoves == 1){
+                        && model.piecesOnTheBoard[square.x+1][square.y].numberOfMoves == 1
+                        && model.piecesOnTheBoard[square.x+1][square.y] == model.lastPiecesMoved.get(model.lastPiecesMoved.size() - 1)){
                     this.listOfCandidateMoves.add(new Move(square, new Position(square.x+1, square.y+1)));
                 }
                 if (square.x - 1 > -1 && model.piecesOnTheBoard[square.x-1][square.y] instanceof Pawn
                         && model.piecesOnTheBoard[square.x-1][square.y].getColor() == Color.BLACK
-                        && model.piecesOnTheBoard[square.x-1][square.y].numberOfMoves == 1){
+                        && model.piecesOnTheBoard[square.x-1][square.y].numberOfMoves == 1
+                        && model.piecesOnTheBoard[square.x-1][square.y] == model.lastPiecesMoved.get(model.lastPiecesMoved.size() - 1)){
                     this.listOfCandidateMoves.add(new Move(square, new Position(square.x-1, square.y+1)));
                 }
             }
@@ -166,12 +168,14 @@ public class Pawn extends Piece{
             if (square.y == 3){
                 if (square.x + 1 < 8 && model.piecesOnTheBoard[square.x+1][square.y] instanceof Pawn
                         && model.piecesOnTheBoard[square.x+1][square.y].getColor() == Color.WHITE
-                        && model.piecesOnTheBoard[square.x+1][square.y].numberOfMoves == 1){
+                        && model.piecesOnTheBoard[square.x+1][square.y].numberOfMoves == 1
+                        && model.piecesOnTheBoard[square.x+1][square.y] == model.lastPiecesMoved.get(model.lastPiecesMoved.size() - 1)){
                     this.listOfCandidateMoves.add(new Move(square, new Position(square.x+1, square.y-1)));
                 }
                 if (square.x - 1 > -1 && model.piecesOnTheBoard[square.x-1][square.y] instanceof Pawn
                         && model.piecesOnTheBoard[square.x-1][square.y].getColor() == Color.WHITE
-                        && model.piecesOnTheBoard[square.x-1][square.y].numberOfMoves == 1){
+                        && model.piecesOnTheBoard[square.x-1][square.y].numberOfMoves == 1
+                        && model.piecesOnTheBoard[square.x-1][square.y] == model.lastPiecesMoved.get(model.lastPiecesMoved.size() - 1)){
                     this.listOfCandidateMoves.add(new Move(square, new Position(square.x-1, square.y-1)));
                 }
             }
@@ -181,26 +185,25 @@ public class Pawn extends Piece{
     public void callPromotion(Move m){
         switch(m.getPromotionOption()){
             case 0:
-                model.piecesOnTheBoard[m.getEnd().x][m.getEnd().y] = new Queen(color, m.getEnd().x, m.getEnd().y, true);
-                break;
-            case 3:
-                model.piecesOnTheBoard[m.getEnd().x][m.getEnd().y] = new Rook(color, m.getEnd().x, m.getEnd().y, true);
-                break;
-            case 2:
-                model.piecesOnTheBoard[m.getEnd().x][m.getEnd().y] = new Bishop(color, m.getEnd().x, m.getEnd().y, true);
+                model.piecesOnTheBoard[m.getEnd().x][m.getEnd().y] = new Queen(color, m.getEnd().x, m.getEnd().y, true, super.model);
                 break;
             case 1:
-                model.piecesOnTheBoard[m.getEnd().x][m.getEnd().y] = new Knight(color, m.getEnd().x, m.getEnd().y, true);
+                model.piecesOnTheBoard[m.getEnd().x][m.getEnd().y] = new Rook(color, m.getEnd().x, m.getEnd().y, true, super.model);
+                break;
+            case 2:
+                model.piecesOnTheBoard[m.getEnd().x][m.getEnd().y] = new Bishop(color, m.getEnd().x, m.getEnd().y, true, super.model);
+                break;
+            case 3:
+                model.piecesOnTheBoard[m.getEnd().x][m.getEnd().y] = new Knight(color, m.getEnd().x, m.getEnd().y, true, super.model);
                 break;
         }
         
         model.piecesOnTheBoard[m.getEnd().x][m.getEnd().y].ancientPiece = this;
+        this.isOnTheBoard = false;
         
         if (color == Color.WHITE){
-            this.isOnTheBoard = false;
             model.whitePieces.add(model.piecesOnTheBoard[m.getEnd().x][m.getEnd().y]);
         } else {
-            this.isOnTheBoard = false;
             model.blackPieces.add(model.piecesOnTheBoard[m.getEnd().x][m.getEnd().y]);
         }
     }

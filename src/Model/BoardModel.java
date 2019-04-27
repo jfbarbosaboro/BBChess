@@ -12,16 +12,15 @@ public class BoardModel implements Observer{
     public ArrayList<Piece> whitePieces;
     public ArrayList<Piece> blackPieces;
     public Piece[][] piecesOnTheBoard;
+    public ArrayList<Move> listOfPossibleMoves = new ArrayList<Move>();
     private Piece.Color turn = Piece.Color.WHITE;
     protected ArrayList<Piece> lastPiecesMoved = new ArrayList<Piece>();
-    protected Piece whiteKing = new King(Piece.Color.WHITE, 4, 0); // Pointer to White King.
-    protected Piece blackKing = new King(Piece.Color.BLACK, 4, 7); // Pointer to Black King.
-    protected Piece leftWhiteRook = new Rook(Piece.Color.WHITE, 0, 0, false);
-    protected Piece rightWhiteRook = new Rook(Piece.Color.WHITE, 7, 0, false);
-    protected Piece leftBlackRook = new Rook(Piece.Color.BLACK, 0, 7, false);
-    protected Piece rightBlackRook = new Rook(Piece.Color.BLACK, 7, 7, false);
-    
-    protected ArrayList<Move> listOfPossibleMoves = new ArrayList<Move>();
+    protected Piece whiteKing;// Pointer to White King.
+    protected Piece blackKing; // Pointer to Black King.
+    protected Piece leftWhiteRook;
+    protected Piece rightWhiteRook;
+    protected Piece leftBlackRook;
+    protected Piece rightBlackRook;
     protected BoardController controller;
 
     public BoardModel()  {
@@ -35,46 +34,57 @@ public class BoardModel implements Observer{
         this.controller = controller;
     }
     
-    private void init() {
+    public void init() {
+        
+        whitePieces.clear();
+        blackPieces.clear();
+        
+        this.whiteKing = new King(Piece.Color.WHITE, 4, 0, this);
+        this.blackKing = new King(Piece.Color.BLACK, 4, 7, this);
+        this.leftWhiteRook = new Rook(Piece.Color.WHITE, 0, 0, false, this);
+        this.rightWhiteRook = new Rook(Piece.Color.WHITE, 7, 0, false, this);
+        this.leftBlackRook = new Rook(Piece.Color.BLACK, 0, 7, false, this);
+        this.rightBlackRook = new Rook(Piece.Color.BLACK, 7, 7, false, this);
+        
         // initialize white pieces
-        whitePieces.add(new Pawn(Piece.Color.WHITE,0,1));
-        whitePieces.add(new Pawn(Piece.Color.WHITE,1,1));
-        whitePieces.add(new Pawn(Piece.Color.WHITE,2,1));
-        whitePieces.add(new Pawn(Piece.Color.WHITE,3,1));
-        whitePieces.add(new Pawn(Piece.Color.WHITE,4,1));
-        whitePieces.add(new Pawn(Piece.Color.WHITE,5,1));
-        whitePieces.add(new Pawn(Piece.Color.WHITE,6,1));
-        whitePieces.add(new Pawn(Piece.Color.WHITE,7,1));
-        whitePieces.add(new Queen(Piece.Color.WHITE, 3, 0, false));
-        whitePieces.add(whiteKing);
-        whitePieces.add(new Bishop(Piece.Color.WHITE, 5, 0, false));
-        whitePieces.add(new Bishop(Piece.Color.WHITE, 2, 0, false));
-        whitePieces.add(new Knight(Piece.Color.WHITE, 6, 0, false));
-        whitePieces.add(new Knight(Piece.Color.WHITE, 1, 0, false));
-        whitePieces.add(leftWhiteRook);
-        whitePieces.add(rightWhiteRook);
+        whitePieces.add(new Pawn(Piece.Color.WHITE,0,1, this));
+        whitePieces.add(new Pawn(Piece.Color.WHITE,1,1, this));
+        whitePieces.add(new Pawn(Piece.Color.WHITE,2,1, this));
+        whitePieces.add(new Pawn(Piece.Color.WHITE,3,1, this));
+        whitePieces.add(new Pawn(Piece.Color.WHITE,4,1, this));
+        whitePieces.add(new Pawn(Piece.Color.WHITE,5,1, this));
+        whitePieces.add(new Pawn(Piece.Color.WHITE,6,1, this));
+        whitePieces.add(new Pawn(Piece.Color.WHITE,7,1, this));
+        whitePieces.add(new Queen(Piece.Color.WHITE, 3, 0, false, this));
+        whitePieces.add(this.whiteKing);
+        whitePieces.add(new Bishop(Piece.Color.WHITE, 5, 0, false, this));
+        whitePieces.add(new Bishop(Piece.Color.WHITE, 2, 0, false, this));
+        whitePieces.add(new Knight(Piece.Color.WHITE, 6, 0, false, this));
+        whitePieces.add(new Knight(Piece.Color.WHITE, 1, 0, false, this));
+        whitePieces.add(this.leftWhiteRook);
+        whitePieces.add(this.rightWhiteRook);
         
         // inicialize black pieces
-        blackPieces.add(new Pawn(Piece.Color.BLACK,0,6));
-        blackPieces.add(new Pawn(Piece.Color.BLACK,1,6));
-        blackPieces.add(new Pawn(Piece.Color.BLACK,2,6));
-        blackPieces.add(new Pawn(Piece.Color.BLACK,3,6));
-        blackPieces.add(new Pawn(Piece.Color.BLACK,4,6));
-        blackPieces.add(new Pawn(Piece.Color.BLACK,5,6));
-        blackPieces.add(new Pawn(Piece.Color.BLACK,6,6));
-        blackPieces.add(new Pawn(Piece.Color.BLACK,7,6));
-        blackPieces.add(new Queen(Piece.Color.BLACK, 3, 7, false));
-        blackPieces.add(blackKing);
-        blackPieces.add(new Bishop(Piece.Color.BLACK, 5, 7, false));
-        blackPieces.add(new Bishop(Piece.Color.BLACK, 2, 7, false));
-        blackPieces.add(new Knight(Piece.Color.BLACK, 6, 7, false));
-        blackPieces.add(new Knight(Piece.Color.BLACK, 1, 7, false));
-        blackPieces.add(leftBlackRook);
-        blackPieces.add(rightBlackRook);
+        blackPieces.add(new Pawn(Piece.Color.BLACK,0,6, this));
+        blackPieces.add(new Pawn(Piece.Color.BLACK,1,6, this));
+        blackPieces.add(new Pawn(Piece.Color.BLACK,2,6, this));
+        blackPieces.add(new Pawn(Piece.Color.BLACK,3,6, this));
+        blackPieces.add(new Pawn(Piece.Color.BLACK,4,6, this));
+        blackPieces.add(new Pawn(Piece.Color.BLACK,5,6, this));
+        blackPieces.add(new Pawn(Piece.Color.BLACK,6,6, this));
+        blackPieces.add(new Pawn(Piece.Color.BLACK,7,6, this));
+        blackPieces.add(new Queen(Piece.Color.BLACK, 3, 7, false, this));
+        blackPieces.add(this.blackKing);
+        blackPieces.add(new Bishop(Piece.Color.BLACK, 5, 7, false, this));
+        blackPieces.add(new Bishop(Piece.Color.BLACK, 2, 7, false, this));
+        blackPieces.add(new Knight(Piece.Color.BLACK, 6, 7, false, this));
+        blackPieces.add(new Knight(Piece.Color.BLACK, 1, 7, false, this));
+        blackPieces.add(this.leftBlackRook);
+        blackPieces.add(this.rightBlackRook);
         
         for (int i = 0; i < 8; i++){
             for(int j = 2; j < 6; j++){
-                piecesOnTheBoard[i][j] = new Empty(Piece.Color.EMPTY, i, j);
+                piecesOnTheBoard[i][j] = new Empty(Piece.Color.EMPTY, i, j, this);
             }
         }
         
@@ -132,7 +142,7 @@ public class BoardModel implements Observer{
         //  Realization of the moves at this turn.
         for (Move M : moves){
             Piece aux = piecesOnTheBoard[M.getIni().x][M.getIni().y];
-            piecesOnTheBoard[M.getIni().x][M.getIni().y] = new Empty(Piece.Color.EMPTY, M.getIni().x, M.getIni().y);
+            piecesOnTheBoard[M.getIni().x][M.getIni().y] = new Empty(Piece.Color.EMPTY, M.getIni().x, M.getIni().y, this);
             piecesOnTheBoard[M.getEnd().x][M.getEnd().y].isOnTheBoard = false;
             aux.listOfTakenPieces.add(piecesOnTheBoard[M.getEnd().x][M.getEnd().y]);
             piecesOnTheBoard[M.getEnd().x][M.getEnd().y] = aux;
@@ -177,6 +187,7 @@ public class BoardModel implements Observer{
             currentSquare = lastMoved.getSquare();
             if (this.piecesOnTheBoard[currentSquare.x][currentSquare.y].lastMoves.isEmpty() && this.piecesOnTheBoard[currentSquare.x][currentSquare.y].isPromotedPiece){
                 this.piecesOnTheBoard[currentSquare.x][currentSquare.y] = this.piecesOnTheBoard[currentSquare.x][currentSquare.y].ancientPiece;
+                
             }
             this.piecesOnTheBoard[currentSquare.x][currentSquare.y] = this.piecesOnTheBoard[currentSquare.x][currentSquare.y].listOfTakenPieces.remove(this.piecesOnTheBoard[currentSquare.x][currentSquare.y].listOfTakenPieces.size() - 1);
             this.piecesOnTheBoard[currentSquare.x][currentSquare.y].isOnTheBoard = true;

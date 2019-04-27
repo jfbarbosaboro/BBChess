@@ -24,11 +24,12 @@ public abstract class Piece implements IMovable{
         EMPTY
     }
     
-    public Piece(Color color, int x, int y, boolean isPromotedPiece)  {
+    public Piece(Color color, int x, int y, boolean isPromotedPiece, BoardModel model)  {
         this.color = color;
         this.square = new Position(x,y);
         this.isPromotedPiece = isPromotedPiece;
         this.isOnTheBoard = true;
+        this.addModel(model);
     }
     
     public abstract void draw(Graphics2D g);

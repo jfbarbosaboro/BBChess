@@ -23,8 +23,8 @@ public class King extends Piece{
     protected final static String bKingImgPath = "img/pieces/b-king.png";
     protected static BufferedImage bKingImg = null; 
 
-    public King(Piece.Color color, int x, int y)  {
-        super(color, x, y, false);
+    public King(Piece.Color color, int x, int y, BoardModel model)  {
+        super(color, x, y, false, model);
         if(this.color == Piece.Color.BLACK){
             try{
                 bKingImg = ImageIO.read(new File(bKingImgPath));
