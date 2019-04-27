@@ -13,8 +13,9 @@ public abstract class Piece implements IMovable{
     protected BoardModel model;
     public ArrayList<Move> listOfCandidateMoves = new ArrayList<Move>();
     public ArrayList<Move> lastMoves = new ArrayList<Move>();
-    public ArrayList<Piece> listOfPiecesTaken = new ArrayList<Piece>();
+    public ArrayList<Piece> listOfTakenPieces = new ArrayList<Piece>();
     public Piece ancientPiece;
+    public boolean isOnTheBoard;
     
     
     public enum Color{
@@ -27,6 +28,7 @@ public abstract class Piece implements IMovable{
         this.color = color;
         this.square = new Position(x,y);
         this.isPromotedPiece = isPromotedPiece;
+        this.isOnTheBoard = true;
     }
     
     public abstract void draw(Graphics2D g);
@@ -60,7 +62,7 @@ public abstract class Piece implements IMovable{
         this.square.setPosition(lastMove.getIni().x, lastMove.getIni().y);
     }
     
-    protected abstract void createListOfCandidateMoves();
+    public abstract void createListOfCandidateMoves();
     
     public Color getColor(){
         return color;

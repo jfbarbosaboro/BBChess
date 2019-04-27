@@ -57,21 +57,47 @@ public class Bishop extends Piece{
     @Override
     public void createListOfCandidateMoves(){
         
-        for (int i = 1, reachedEnd = 0; square.x+i < 8 && square.y+i < 8 && model.piecesOnTheBoard[square.x + i][square.y + i].getColor() != this.color && reachedEnd == 0; i++){
-            this.listOfCandidateMoves.add(new Move(square, new Position(square.x+i, square.y+i)));
-            if (model.piecesOnTheBoard[square.x + i][square.y + i].getColor() != Piece.Color.EMPTY) reachedEnd = 1;
+        this.listOfCandidateMoves.clear();
+        
+        for (int i = 1; square.x + i < 8 && square.y + i < 8; i++){
+            if (model.piecesOnTheBoard[square.x+i][square.y+i].getColor() != this.color){
+                this.listOfCandidateMoves.add(new Move(square, new Position(square.x+i, square.y+i)));
+                if (model.piecesOnTheBoard[square.x+i][square.y+i].getColor() != Color.EMPTY){
+                    break;
+                }
+            } else {
+                break;
+            }
         }
-        for (int i = 1, reachedEnd = 0; square.x+i < 8 && square.y-i > -1 && model.piecesOnTheBoard[square.x + i][square.y - i].getColor() != this.color && reachedEnd == 0; i++){
-            this.listOfCandidateMoves.add(new Move(square, new Position(square.x+i, square.y-i)));
-            if (model.piecesOnTheBoard[square.x + i][square.y - i].getColor() != Piece.Color.EMPTY) reachedEnd = 1;
+        for (int i = 1; square.x + i < 8 && square.y - i > -1; i++){
+            if (model.piecesOnTheBoard[square.x+i][square.y-i].getColor() != this.color){
+                this.listOfCandidateMoves.add(new Move(square, new Position(square.x+i, square.y-i)));
+                if (model.piecesOnTheBoard[square.x+i][square.y-i].getColor() != Color.EMPTY){
+                    break;
+                }
+            } else {
+                break;
+            }
         }
-        for (int i = 1, reachedEnd = 0; square.x-i > -1 && square.y-i > -1 && model.piecesOnTheBoard[square.x - i][square.y - i].getColor() != this.color && reachedEnd == 0; i++){
-            this.listOfCandidateMoves.add(new Move(square, new Position(square.x-i, square.y-i)));
-            if (model.piecesOnTheBoard[square.x - i][square.y - i].getColor() != Piece.Color.EMPTY) reachedEnd = 1;
+        for (int i = 1; square.x - i > -1 && square.y - i > -1; i++){
+            if (model.piecesOnTheBoard[square.x-i][square.y-i].getColor() != this.color){
+                this.listOfCandidateMoves.add(new Move(square, new Position(square.x-i, square.y-i)));
+                if (model.piecesOnTheBoard[square.x-i][square.y-i].getColor() != Color.EMPTY){
+                    break;
+                }
+            } else {
+                break;
+            }
         }
-        for (int i = 1, reachedEnd = 0; square.x-i>-1 && square.y+i < 8 && model.piecesOnTheBoard[square.x - i][square.y + i].getColor() != this.color && reachedEnd == 0; i++){
-            this.listOfCandidateMoves.add(new Move(square, new Position(square.x-i, square.y+i)));
-            if (model.piecesOnTheBoard[square.x - i][square.y + i].getColor() != Piece.Color.EMPTY) reachedEnd = 1;
+        for (int i = 1; square.x - i > -1 && square.y + i < 8; i++){
+            if (model.piecesOnTheBoard[square.x-i][square.y+i].getColor() != this.color){
+                this.listOfCandidateMoves.add(new Move(square, new Position(square.x-i, square.y+i)));
+                if (model.piecesOnTheBoard[square.x-i][square.y+i].getColor() != Color.EMPTY){
+                    break;
+                }
+            } else {
+                break;
+            }
         }
     }
 }

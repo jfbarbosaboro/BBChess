@@ -19,7 +19,7 @@ public class BoardModel implements Observer{
     protected Piece leftWhiteRook = new Rook(Piece.Color.WHITE, 0, 0, false);
     protected Piece rightWhiteRook = new Rook(Piece.Color.WHITE, 7, 0, false);
     protected Piece leftBlackRook = new Rook(Piece.Color.BLACK, 0, 7, false);
-    protected Piece rightBlackRook = new Rook(Piece.Color.WHITE, 7, 7, false);
+    protected Piece rightBlackRook = new Rook(Piece.Color.BLACK, 7, 7, false);
     
     protected ArrayList<Move> listOfPossibleMoves = new ArrayList<Move>();
     protected BoardController controller;
@@ -133,12 +133,8 @@ public class BoardModel implements Observer{
         for (Move M : moves){
             Piece aux = piecesOnTheBoard[M.getIni().x][M.getIni().y];
             piecesOnTheBoard[M.getIni().x][M.getIni().y] = new Empty(Piece.Color.EMPTY, M.getIni().x, M.getIni().y);
-            if(piecesOnTheBoard[M.getEnd().x][M.getEnd().y].getColor() == Piece.Color.WHITE){
-                whitePieces.remove(piecesOnTheBoard[M.getEnd().x][M.getEnd().y]);
-            } else if (piecesOnTheBoard[M.getEnd().x][M.getEnd().y].getColor() == Piece.Color.BLACK) {
-                blackPieces.remove(piecesOnTheBoard[M.getEnd().x][M.getEnd().y]);
-            }
-            aux.listOfPiecesTaken.add(piecesOnTheBoard[M.getEnd().x][M.getEnd().y]);
+            piecesOnTheBoard[M.getEnd().x][M.getEnd().y].isOnTheBoard = false;
+            aux.listOfTakenPieces.add(piecesOnTheBoard[M.getEnd().x][M.getEnd().y]);
             piecesOnTheBoard[M.getEnd().x][M.getEnd().y] = aux;
             aux.makeMove(M);
             lastPiecesMoved.add(aux);
@@ -153,14 +149,15 @@ public class BoardModel implements Observer{
         
     }
     
+    
+    
     public Boolean isMovePossible(Move m){
-        for(Move M : listOfPossibleMoves){
-            if (m.ini.x == M.ini.x && m.ini.y == M.ini.y && m.end.x == M.end.x && m.end.y == M.end.y){
+        for (Move M : this.listOfPossibleMoves){
+            if (M.ini.x() == m.ini.x() && M.ini.y() == m.ini.y() && M.end.x() == m.end.x() && M.end.y() == m.end.y()){
                 return true;
             }
         }
-        //return false; //change commented line to work properly.
-        return true;
+        return false;
     }
     
     public Piece.Color getTurn(){
@@ -181,12 +178,8 @@ public class BoardModel implements Observer{
             if (this.piecesOnTheBoard[currentSquare.x][currentSquare.y].lastMoves.isEmpty() && this.piecesOnTheBoard[currentSquare.x][currentSquare.y].isPromotedPiece){
                 this.piecesOnTheBoard[currentSquare.x][currentSquare.y] = this.piecesOnTheBoard[currentSquare.x][currentSquare.y].ancientPiece;
             }
-            this.piecesOnTheBoard[currentSquare.x][currentSquare.y] = this.piecesOnTheBoard[currentSquare.x][currentSquare.y].listOfPiecesTaken.remove(this.piecesOnTheBoard[currentSquare.x][currentSquare.y].listOfPiecesTaken.size() - 1);
-            if(this.piecesOnTheBoard[currentSquare.x][currentSquare.y].getColor() == Piece.Color.WHITE){
-                whitePieces.add(this.piecesOnTheBoard[currentSquare.x][currentSquare.y]);
-            } else if (this.piecesOnTheBoard[currentSquare.x][currentSquare.y].getColor() == Piece.Color.BLACK) {
-                blackPieces.add(this.piecesOnTheBoard[currentSquare.x][currentSquare.y]);
-            }
+            this.piecesOnTheBoard[currentSquare.x][currentSquare.y] = this.piecesOnTheBoard[currentSquare.x][currentSquare.y].listOfTakenPieces.remove(this.piecesOnTheBoard[currentSquare.x][currentSquare.y].listOfTakenPieces.size() - 1);
+            this.piecesOnTheBoard[currentSquare.x][currentSquare.y].isOnTheBoard = true;
             lastMoved.undo();
             this.piecesOnTheBoard[lastMoved.getSquare().x][lastMoved.getSquare().y] = lastMoved;
             if (this.lastPiecesMoved.isEmpty()){
@@ -199,6 +192,28 @@ public class BoardModel implements Observer{
         } else {
             this.turn = Piece.Color.WHITE;
         }
+    }
+    
+    public void createListOfPossibleMoves(){
+        
+        listOfPossibleMoves.clear();
+        
+        for (int i = 0; i < 8; i++){
+            for (int j = 0; j < 8; j++){
+                if (this.piecesOnTheBoard[i][j].getColor() == this.turn){
+                    this.piecesOnTheBoard[i][j].createListOfCandidateMoves();
+                    for (Move m : this.piecesOnTheBoard[i][j].listOfCandidateMoves){
+                        Piece.Color aux = this.piecesOnTheBoard[i][j].getColor();
+                        this.makeMove(m);
+                        if (!this.isKingOfColorChecked(aux)){
+                            this.listOfPossibleMoves.add(m);
+                        }
+                        this.undo();
+                    }
+                }
+            }
+        }
+        
     }
     
     public boolean thereIsNothingToUndo(){
@@ -216,25 +231,9 @@ public class BoardModel implements Observer{
     
     public boolean isKingOfColorChecked(Piece.Color c){
         if (c == Piece.Color.WHITE){
-            return isSquareAttackedByColor(whiteKing.square, Piece.Color.BLACK);
+            return isSquareAttackedByColor(whiteKing.square.x, whiteKing.square.y, Piece.Color.BLACK);
         } else {
-            return isSquareAttackedByColor(blackKing.square, Piece.Color.WHITE);
-        }
-    }
-    
-    public void createListOfPossibleMoves(){
-        
-        listOfPossibleMoves.clear();
-        
-        for (Piece p : (turn == Piece.Color.WHITE ? whitePieces : blackPieces)){
-            p.createListOfCandidateMoves();
-            for(Move m : p.listOfCandidateMoves){
-                makeMove(m);
-                if (!isKingOfColorChecked(p.getColor())){
-                    listOfPossibleMoves.add(new Move(m.ini, m.end));
-                }
-                undo();
-            }
+            return isSquareAttackedByColor(blackKing.square.x, blackKing.square.y, Piece.Color.WHITE);
         }
     }
     
@@ -248,26 +247,20 @@ public class BoardModel implements Observer{
         return PossibleMovesForPiece;
     }
     
-    //draw
-    
-    public void updateListOfPossibleMoves(){
-        
-    }
-    
-    public boolean isSquareAttackedByColor(Position p, Piece.Color c){
+    public boolean isSquareAttackedByColor(int x, int y, Piece.Color c){
         for (int i = 1; 
-             (p.x + i < 8 && p.y + i < 8); 
+             (x + i < 8 && y + i < 8); 
              i++){
             
-            if (this.piecesOnTheBoard[p.x+i][p.y+i].getColor() == Piece.Color.EMPTY){
+            if (this.piecesOnTheBoard[x+i][y+i].getColor() == Piece.Color.EMPTY){
                 continue;
             }
             
-            if (this.piecesOnTheBoard[p.x+i][p.y+i].getColor() == Piece.Color.BLACK && i == 1 && this.piecesOnTheBoard[p.x+i][p.y+i] instanceof Pawn){
+            if (i == 1 && c == Piece.Color.BLACK && this.piecesOnTheBoard[x+i][y+i].getColor() == Piece.Color.BLACK && this.piecesOnTheBoard[x+i][y+i] instanceof Pawn){
                 return true;
             }
             
-            if (this.piecesOnTheBoard[p.x+i][p.y+i].getColor() == c && (this.piecesOnTheBoard[p.x+i][p.y+i] instanceof Queen || this.piecesOnTheBoard[p.x+i][p.y+i] instanceof Bishop)){
+            if (this.piecesOnTheBoard[x+i][y+i].getColor() == c && (this.piecesOnTheBoard[x+i][y+i] instanceof Queen || this.piecesOnTheBoard[x+i][y+i] instanceof Bishop)){
                 return true;
             } else {
                 break;
@@ -275,18 +268,18 @@ public class BoardModel implements Observer{
         }
         
         for (int i = 1; 
-             (p.x + i < 8 && p.y - i > -1); 
+             (x + i < 8 && y - i > -1); 
              i++){
             
-            if (this.piecesOnTheBoard[p.x+i][p.y-i].getColor() == Piece.Color.EMPTY){
+            if (this.piecesOnTheBoard[x+i][y-i].getColor() == Piece.Color.EMPTY){
                 continue;
             }
             
-            if (this.piecesOnTheBoard[p.x+i][p.y-i].getColor() == Piece.Color.WHITE && i == 1 && this.piecesOnTheBoard[p.x+i][p.y-i] instanceof Pawn){
+            if (i == 1 && c == Piece.Color.WHITE && this.piecesOnTheBoard[x+i][y-i].getColor() == Piece.Color.WHITE && this.piecesOnTheBoard[x+i][y-i] instanceof Pawn){
                 return true;
             }
             
-            if (this.piecesOnTheBoard[p.x+i][p.y-i].getColor() == c && (this.piecesOnTheBoard[p.x+i][p.y-i] instanceof Queen || this.piecesOnTheBoard[p.x+i][p.y-i] instanceof Bishop)){
+            if (this.piecesOnTheBoard[x+i][y-i].getColor() == c && (this.piecesOnTheBoard[x+i][y-i] instanceof Queen || this.piecesOnTheBoard[x+i][y-i] instanceof Bishop)){
                 return true;
             } else {
                 break;
@@ -294,18 +287,18 @@ public class BoardModel implements Observer{
         }
         
         for (int i = 1; 
-             (p.x - i > -1 && p.y + i < 8); 
+             (x - i > -1 && y + i < 8); 
              i++){
             
-            if (this.piecesOnTheBoard[p.x-i][p.y+i].getColor() == Piece.Color.EMPTY){
+            if (this.piecesOnTheBoard[x-i][y+i].getColor() == Piece.Color.EMPTY){
                 continue;
             }
             
-            if (this.piecesOnTheBoard[p.x-i][p.y+i].getColor() == Piece.Color.BLACK && i == 1 && this.piecesOnTheBoard[p.x-i][p.y+i] instanceof Pawn){
+            if (i == 1 && c == Piece.Color.BLACK && this.piecesOnTheBoard[x-i][y+i].getColor() == Piece.Color.BLACK && this.piecesOnTheBoard[x-i][y+i] instanceof Pawn){
                 return true;
             }
             
-            if (this.piecesOnTheBoard[p.x-i][p.y+i].getColor() == c && (this.piecesOnTheBoard[p.x-i][p.y+i] instanceof Queen || this.piecesOnTheBoard[p.x-i][p.y+i] instanceof Bishop)){
+            if (this.piecesOnTheBoard[x-i][y+i].getColor() == c && (this.piecesOnTheBoard[x-i][y+i] instanceof Queen || this.piecesOnTheBoard[x-i][y+i] instanceof Bishop)){
                 return true;
             } else {
                 break;
@@ -313,18 +306,18 @@ public class BoardModel implements Observer{
         }
         
         for (int i = 1; 
-             (p.x - i > -1 && p.y - i > -1); 
+             (x - i > -1 && y - i > -1); 
              i++){
             
-            if (this.piecesOnTheBoard[p.x-i][p.y-i].getColor() == Piece.Color.EMPTY){
+            if (this.piecesOnTheBoard[x-i][y-i].getColor() == Piece.Color.EMPTY){
                 continue;
             }
             
-            if (this.piecesOnTheBoard[p.x-i][p.y-i].getColor() == Piece.Color.WHITE && i == 1 && this.piecesOnTheBoard[p.x-i][p.y-i] instanceof Pawn){
+            if (i == 1 && c == Piece.Color.WHITE && this.piecesOnTheBoard[x-i][y-i].getColor() == Piece.Color.WHITE && this.piecesOnTheBoard[x-i][y-i] instanceof Pawn){
                 return true;
             }
             
-            if (this.piecesOnTheBoard[p.x-i][p.y-i].getColor() == c && (this.piecesOnTheBoard[p.x-i][p.y-i] instanceof Queen || this.piecesOnTheBoard[p.x-i][p.y-i] instanceof Bishop)){
+            if (this.piecesOnTheBoard[x-i][y-i].getColor() == c && (this.piecesOnTheBoard[x-i][y-i] instanceof Queen || this.piecesOnTheBoard[x-i][y-i] instanceof Bishop)){
                 return true;
             } else {
                 break;
@@ -332,14 +325,14 @@ public class BoardModel implements Observer{
         }
         
         for (int i = 1; 
-             (p.x + i < 8); 
+             (x + i < 8); 
              i++){
             
-            if (this.piecesOnTheBoard[p.x+i][p.y].getColor() == Piece.Color.EMPTY){
+            if (this.piecesOnTheBoard[x+i][y].getColor() == Piece.Color.EMPTY){
                 continue;
             }
             
-            if (this.piecesOnTheBoard[p.x+i][p.y].getColor() == c && (this.piecesOnTheBoard[p.x+i][p.y] instanceof Queen || this.piecesOnTheBoard[p.x+i][p.y] instanceof Rook)){
+            if (this.piecesOnTheBoard[x+i][y].getColor() == c && (this.piecesOnTheBoard[x+i][y] instanceof Queen || this.piecesOnTheBoard[x+i][y] instanceof Rook)){
                 return true;
             } else {
                 break;
@@ -347,14 +340,14 @@ public class BoardModel implements Observer{
         }
         
         for (int i = -1; 
-             (p.x + i > -1); 
+             (x + i > -1); 
              i--){
             
-            if (this.piecesOnTheBoard[p.x+i][p.y].getColor() == Piece.Color.EMPTY){
+            if (this.piecesOnTheBoard[x+i][y].getColor() == Piece.Color.EMPTY){
                 continue;
             }
             
-            if (this.piecesOnTheBoard[p.x+i][p.y].getColor() == c && (this.piecesOnTheBoard[p.x+i][p.y] instanceof Queen || this.piecesOnTheBoard[p.x+i][p.y] instanceof Rook)){
+            if (this.piecesOnTheBoard[x+i][y].getColor() == c && (this.piecesOnTheBoard[x+i][y] instanceof Queen || this.piecesOnTheBoard[x+i][y] instanceof Rook)){
                 return true;
             } else {
                 break;
@@ -362,14 +355,14 @@ public class BoardModel implements Observer{
         }
         
         for (int j = 1; 
-             (p.y + j < 8); 
+             (y + j < 8); 
              j++){
             
-            if (this.piecesOnTheBoard[p.x][p.y+j].getColor() == Piece.Color.EMPTY){
+            if (this.piecesOnTheBoard[x][y+j].getColor() == Piece.Color.EMPTY){
                 continue;
             }
             
-            if (this.piecesOnTheBoard[p.x][p.y+j].getColor() == c && (this.piecesOnTheBoard[p.x][p.y+j] instanceof Queen || this.piecesOnTheBoard[p.x][p.y+j] instanceof Rook)){
+            if (this.piecesOnTheBoard[x][y+j].getColor() == c && (this.piecesOnTheBoard[x][y+j] instanceof Queen || this.piecesOnTheBoard[x][y+j] instanceof Rook)){
                 return true;
             } else {
                 break;
@@ -377,67 +370,77 @@ public class BoardModel implements Observer{
         }
         
         for (int j = -1; 
-             (p.y + j > -1); 
+             (y + j > -1); 
              j--){
             
-            if (this.piecesOnTheBoard[p.x][p.y+j].getColor() == Piece.Color.EMPTY){
+            if (this.piecesOnTheBoard[x][y+j].getColor() == Piece.Color.EMPTY){
                 continue;
             }
             
-            if (this.piecesOnTheBoard[p.x][p.y+j].getColor() == c && (this.piecesOnTheBoard[p.x][p.y+j] instanceof Queen || this.piecesOnTheBoard[p.x][p.y+j] instanceof Rook)){
+            if (this.piecesOnTheBoard[x][y+j].getColor() == c && (this.piecesOnTheBoard[x][y+j] instanceof Queen || this.piecesOnTheBoard[x][y+j] instanceof Rook)){
                 return true;
             } else {
                 break;
             }
         }
         
-        if (p.x + 1 < 8 && p.y + 2 < 8){
-            if (this.piecesOnTheBoard[p.x+1][p.y+2].getColor() == c && this.piecesOnTheBoard[p.x+1][p.y+2] instanceof Knight){
+        if (x + 1 < 8 && y + 2 < 8){
+            if (this.piecesOnTheBoard[x+1][y+2].getColor() == c && this.piecesOnTheBoard[x+1][y+2] instanceof Knight){
                 return true;
             }
         }
-        if (p.x + 2 < 8 && p.y + 1 < 8){
-            if (this.piecesOnTheBoard[p.x+2][p.y+1].getColor() == c && this.piecesOnTheBoard[p.x+2][p.y+1] instanceof Knight){
-                return true;
-            }
-        }
-        
-        if (p.x - 1 > -1 && p.y + 2 < 8){
-            if (this.piecesOnTheBoard[p.x-1][p.y+2].getColor() == c && this.piecesOnTheBoard[p.x-1][p.y+2] instanceof Knight){
+        if (x + 2 < 8 && y + 1 < 8){
+            if (this.piecesOnTheBoard[x+2][y+1].getColor() == c && this.piecesOnTheBoard[x+2][y+1] instanceof Knight){
                 return true;
             }
         }
         
-        if (p.x - 2 > -1 && p.y + 1 < 8){
-            if (this.piecesOnTheBoard[p.x-2][p.y+1].getColor() == c && this.piecesOnTheBoard[p.x-2][p.y+1] instanceof Knight){
+        if (x - 1 > -1 && y + 2 < 8){
+            if (this.piecesOnTheBoard[x-1][y+2].getColor() == c && this.piecesOnTheBoard[x-1][y+2] instanceof Knight){
                 return true;
             }
         }
         
-        if (p.x + 1 < 8 && p.y - 2 > -1){
-            if (this.piecesOnTheBoard[p.x+1][p.y-2].getColor() == c && this.piecesOnTheBoard[p.x+1][p.y-2] instanceof Knight){
+        if (x - 2 > -1 && y + 1 < 8){
+            if (this.piecesOnTheBoard[x-2][y+1].getColor() == c && this.piecesOnTheBoard[x-2][y+1] instanceof Knight){
                 return true;
             }
         }
         
-        if (p.x + 2 < 8 && p.y - 1 > -1){
-            if (this.piecesOnTheBoard[p.x+2][p.y-1].getColor() == c && this.piecesOnTheBoard[p.x+2][p.y-1] instanceof Knight){
+        if (x + 1 < 8 && y - 2 > -1){
+            if (this.piecesOnTheBoard[x+1][y-2].getColor() == c && this.piecesOnTheBoard[x+1][y-2] instanceof Knight){
                 return true;
             }
         }
         
-        if (p.x - 1 > -1 && p.y - 2 > -1){
-            if (this.piecesOnTheBoard[p.x-1][p.y-2].getColor() == c && this.piecesOnTheBoard[p.x-1][p.y-2] instanceof Knight){
+        if (x + 2 < 8 && y - 1 > -1){
+            if (this.piecesOnTheBoard[x+2][y-1].getColor() == c && this.piecesOnTheBoard[x+2][y-1] instanceof Knight){
                 return true;
             }
         }
         
-        if (p.x - 2 > -1 && p.y - 1 > -1){
-            if (this.piecesOnTheBoard[p.x-2][p.y-1].getColor() == c && this.piecesOnTheBoard[p.x-2][p.y-1] instanceof Knight){
+        if (x - 1 > -1 && y - 2 > -1){
+            if (this.piecesOnTheBoard[x-1][y-2].getColor() == c && this.piecesOnTheBoard[x-1][y-2] instanceof Knight){
+                return true;
+            }
+        }
+        
+        if (x - 2 > -1 && y - 1 > -1){
+            if (this.piecesOnTheBoard[x-2][y-1].getColor() == c && this.piecesOnTheBoard[x-2][y-1] instanceof Knight){
                 return true;
             }
         }
         
         return false;
+    }
+    
+    public ArrayList<Position> getListOfCapturableEnemiesForPieceIn(Position p) {
+        ArrayList<Position> CapturableEnemiesForPiece = new ArrayList<Position>(); 
+        for(Move m : listOfPossibleMoves) {
+            if((p.x == m.ini.x)&&(p.y == m.ini.y)&&(!(findPiece(m.end.x, m.end.y) instanceof Empty))) {
+                CapturableEnemiesForPiece.add(m.end);
+            }
+        }
+        return CapturableEnemiesForPiece;
     }
 }

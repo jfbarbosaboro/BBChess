@@ -11,6 +11,7 @@ import java.awt.event.MouseMotionListener;
 import Model.Position;
 import Model.Piece;
 import Model.Pawn;
+import java.util.ArrayList;
 
 public class BoardController implements MouseListener, MouseMotionListener{
 
@@ -41,11 +42,13 @@ public class BoardController implements MouseListener, MouseMotionListener{
     
     @Override
     public void mouseClicked(MouseEvent e) {
-        
+        view.repaint();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        String wK, bK;
+        
         Position p = Square(e.getX(),e.getY());
         if (e.getButton() == 1){
             view.getPieceNameLabel().setText(model.getStringOfPieceAt(p.x(), p.y()));
@@ -69,6 +72,15 @@ public class BoardController implements MouseListener, MouseMotionListener{
                 if (model.isMovePossible(m)){
                     model.makeMove(m);
                 }
+                
+                wK = model.isKingOfColorChecked(Piece.Color.WHITE) ? "True" : "False";
+                bK = model.isKingOfColorChecked(Piece.Color.BLACK) ? "True" : "False";
+                
+                System.out.println("White King is in check: " + wK);
+                System.out.println("Black King is in check: " + bK);
+                
+                model.createListOfPossibleMoves();
+                
                 view.repaint();
                 moveState = 0;
             }
@@ -122,11 +134,12 @@ public class BoardController implements MouseListener, MouseMotionListener{
     }
     
     private Position Square(int x, int y){
-        return new Position(Math.min((x-56)/76, 7), Math.min(7 - (y-56)/76, 7));
+        return new Position(Math.min(Math.max((x-56)/76, 0), 7), Math.min(Math.max(7 - (y-56)/76, 0), 7));
     }
     
     public void undo(){
         model.undo();
+        model.createListOfPossibleMoves();
         view.repaint();
     }
     
@@ -136,6 +149,18 @@ public class BoardController implements MouseListener, MouseMotionListener{
     
     public int getPromotionType(){
         return 0;
+    }
+    
+    public Position getIni() {
+        return ini;
+    }
+
+    public ArrayList<Position> getListOfPossibleMovesForPieceIn(Position p) {
+        return model.getListOfPossibleMovesForPieceIn(p);
+     }
+    
+    public ArrayList<Position> getListOfCapturableEnemiesForPieceIn(Position p) { 
+        return model.getListOfCapturableEnemiesForPieceIn(p);
     }
 
 }

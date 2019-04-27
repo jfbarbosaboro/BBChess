@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import Model.Position;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JLabel;
@@ -74,7 +75,7 @@ public class BoardView extends javax.swing.JFrame implements Observer {
         jPCanvas.addMouseMotionListener(controller);
     }
     
-    public void drawMouseSquare(Graphics2D g) {
+    /*public void drawMouseSquare(Graphics2D g) {
         
         int width = 76;
         int height = 76;
@@ -97,7 +98,87 @@ public class BoardView extends javax.swing.JFrame implements Observer {
             g.drawRect(qx * squareWidth + 58, qy * squareHeight + 58, squareWidth-4, squareHeight-4);
             g.setColor(Color.BLACK);
         
-    }   
+    }*/
+    
+    public void drawSquarePerimeter(Graphics2D g, int x, int y, String color) {
+        
+        if (x > 7){
+            x = 7;
+        }
+        if (y > 7){
+            y = 7;
+        }
+        
+        int squareWidth = 76;
+        int squareHeight = 76;
+        
+        g.setColor(Color.decode(color)); // color in hexadecimal
+        g.setStroke(new BasicStroke(4));
+        g.drawRect(x * squareWidth + 58, y * squareHeight + 58, squareWidth-4, squareHeight-4);
+    }
+    
+    public void drawSquareArea(Graphics2D g, int x, int y, String color) {
+        
+        if (x > 7){
+            x = 7;
+        }
+        if (y > 7){
+            y = 7;
+        }
+        
+        int squareWidth = 76;
+        int squareHeight = 76;
+        
+        g.setColor(Color.decode(color)); // color in hexadecimal
+        g.setStroke(new BasicStroke(4));
+        //g.drawRect(x * squareWidth + 58, y * squareHeight + 58, squareWidth-4, squareHeight-4); // Draw complete rectangle
+        g.fillRect(x * squareWidth + 58, y * squareHeight + 58, squareWidth-4, squareHeight-4);
+        
+    }
+    
+    public void drawMouseSquare(Graphics2D g, boolean visibility) {
+        
+        int width = 76;
+        int height = 76;
+        
+        int qx = (mouseCoord.x() - 56)/width;
+        int qy = (mouseCoord.y() - 56)/height; 
+        
+        drawSquarePerimeter(g, qx, qy, "0xAAD400");
+    }
+    
+    public void highlightCurrentPiece(Graphics2D g, boolean visibility) {
+        
+        int moveState = controller.getMoveState();
+        
+        if(moveState == 1) {
+            Position pos = controller.getIni();
+            drawSquarePerimeter(g, pos.x(), 7-pos.y(), "0x6FA8DC");
+            //drawSquareArea(g, pos.x(), 7-pos.y(), "0x6FA8DC"); 
+        }
+    }
+    
+    public void drawPossibleMovesForPiece(Graphics2D g, boolean visibility) {
+        int moveState = controller.getMoveState();
+        
+        if(moveState == 1) {
+            Position pos = controller.getIni();
+            ArrayList<Position> possiblePositions = controller.getListOfPossibleMovesForPieceIn(pos);
+            ArrayList<Position> CapturableEnemies = controller.getListOfCapturableEnemiesForPieceIn(pos);
+            
+            
+            for(int i = 0; i < possiblePositions.size(); i++) {
+                drawSquareArea(g, possiblePositions.get(i).x(), 7 - possiblePositions.get(i).y(),"0xF67C00");
+            } 
+            
+            for(int i = 0; i < CapturableEnemies.size(); i++) {
+                drawSquareArea(g, CapturableEnemies.get(i).x(), 7 - CapturableEnemies.get(i).y(),"0xFD0000");
+            }
+            
+            
+        }
+        
+    }
     
     
   /** This method is called from within the constructor to
@@ -223,9 +304,12 @@ public class BoardView extends javax.swing.JFrame implements Observer {
     private javax.swing.JButton undoButton;
     // End of variables declaration//GEN-END:variables
 
+    
     @Override
     public void update(Observable o, Object arg) {
-        drawMouseSquare((Graphics2D) arg);
+        drawMouseSquare((Graphics2D) arg, true);
+        highlightCurrentPiece((Graphics2D) arg, true);
+        drawPossibleMovesForPiece((Graphics2D) arg, true);
     }
 }
 

@@ -64,57 +64,69 @@ public class King extends Piece{
         }
     }
     
+    @Override
     public void createListOfCandidateMoves(){
-        Move m[] = {
-            new Move(new Position(this.square.x, this.square.y), new Position(this.square.x+1, this.square.y+1)),
-            new Move(new Position(this.square.x, this.square.y), new Position(this.square.x+1, this.square.y-1)),
-            new Move(new Position(this.square.x, this.square.y), new Position(this.square.x-1, this.square.y-1)),
-            new Move(new Position(this.square.x, this.square.y), new Position(this.square.x-1, this.square.y-1)),
-            new Move(new Position(this.square.x, this.square.y), new Position(this.square.x, this.square.y+1)),
-            new Move(new Position(this.square.x, this.square.y), new Position(this.square.x, this.square.y-1)),
-            new Move(new Position(this.square.x, this.square.y), new Position(this.square.x+1, this.square.y)),
-            new Move(new Position(this.square.x, this.square.y), new Position(this.square.x-1, this.square.y))
-        };
         
-        for (Move M : m){
-            if (M.getEnd().x < 8 && M.getEnd().y < 8 && M.getEnd().x > -1 && M.getEnd().y > -1){
-                if (this.model.piecesOnTheBoard[M.getEnd().x][M.getEnd().y].getColor() != this.color){
-                    this.listOfCandidateMoves.add(M);
-                }
-            }
+        this.listOfCandidateMoves.clear();
+        
+        if (square.x + 1 < 8 && model.piecesOnTheBoard[square.x+1][square.y].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x + 1, square.y)));
+        }
+        if (square.y + 1 < 8 && model.piecesOnTheBoard[square.x][square.y+1].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x, square.y + 1)));
+        }
+        if (square.x - 1 > -1 && model.piecesOnTheBoard[square.x-1][square.y].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x - 1, square.y)));
+        }
+        if (square.y - 1 > -1 && model.piecesOnTheBoard[square.x][square.y-1].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x, square.y - 1)));
+        }
+        if (square.x + 1 < 8 && square.y + 1 < 8 && model.piecesOnTheBoard[square.x+1][square.y+1].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x + 1, square.y + 1)));
+        }
+        if (square.x + 1 < 8 && square.y - 1 > -1 && model.piecesOnTheBoard[square.x+1][square.y-1].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x + 1, square.y - 1)));
+        }
+        if (square.x - 1 > -1 && square.y + 1 < 8 && model.piecesOnTheBoard[square.x-1][square.y+1].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x - 1, square.y + 1)));
+        }
+        if (square.x - 1 > -1 && square.y - 1 > -1 && model.piecesOnTheBoard[square.x-1][square.y-1].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x - 1, square.y - 1)));
         }
         
-        if (this.numberOfMoves == 0){
-            if ((this.color == Color.WHITE && model.leftWhiteRook.numberOfMoves == 0) || (this.color == Color.BLACK && model.leftBlackRook.numberOfMoves == 0)){
-                if (model.piecesOnTheBoard[this.square.x - 1][this.square.y].getColor() == Piece.Color.EMPTY
-                        && model.piecesOnTheBoard[this.square.x - 2][this.square.y].getColor() == Piece.Color.EMPTY
-                        && model.piecesOnTheBoard[this.square.x - 3][this.square.y].getColor() == Piece.Color.EMPTY){
-                    if (color == Piece.Color.WHITE){
-                        if (!model.isSquareAttackedByColor(square, Piece.Color.BLACK) && !model.isSquareAttackedByColor(new Position(square.x-1, square.y), Piece.Color.BLACK) && !model.isSquareAttackedByColor(new Position(square.x-2, square.y), Piece.Color.BLACK)){
-                            this.listOfCandidateMoves.add(new Move(this.square, new Position(this.square.x-2, this.square.y)));
-                        }
-                    } else if (color == Piece.Color.BLACK){
-                        if (!model.isSquareAttackedByColor(square, Piece.Color.WHITE) && !model.isSquareAttackedByColor(new Position(square.x-1, square.y), Piece.Color.WHITE) && !model.isSquareAttackedByColor(new Position(square.x-2, square.y), Piece.Color.WHITE)){
-                            this.listOfCandidateMoves.add(new Move(this.square, new Position(this.square.x-2, this.square.y)));
-                        }
-                    }
+        if (numberOfMoves == 0){
+            if (color == Color.WHITE && model.leftWhiteRook.numberOfMoves == 0
+                    && model.piecesOnTheBoard[square.x-1][square.y].getColor() == Color.EMPTY
+                    && model.piecesOnTheBoard[square.x-2][square.y].getColor() == Color.EMPTY
+                    && model.piecesOnTheBoard[square.x-3][square.y].getColor() == Color.EMPTY){
+                if (!model.isKingOfColorChecked(Color.WHITE) && !model.isSquareAttackedByColor(square.x-1, square.y, Color.BLACK) && !model.isSquareAttackedByColor(square.x-2, square.y, Color.BLACK)){
+                    this.listOfCandidateMoves.add(new Move(square, new Position(square.x - 2, square.y)));
+                }
+            }
+            if (color == Color.WHITE && model.rightWhiteRook.numberOfMoves == 0
+                    && model.piecesOnTheBoard[square.x+1][square.y].getColor() == Color.EMPTY
+                    && model.piecesOnTheBoard[square.x+2][square.y].getColor() == Color.EMPTY){
+                if (!model.isKingOfColorChecked(Color.WHITE) && !model.isSquareAttackedByColor(square.x+1, square.y, Color.BLACK) && !model.isSquareAttackedByColor(square.x+2, square.y, Color.BLACK)){
+                    this.listOfCandidateMoves.add(new Move(square, new Position(square.x + 2, square.y)));
+                }
+            }
+            if (color == Color.BLACK && model.leftBlackRook.numberOfMoves == 0
+                    && model.piecesOnTheBoard[square.x-1][square.y].getColor() == Color.EMPTY
+                    && model.piecesOnTheBoard[square.x-2][square.y].getColor() == Color.EMPTY
+                    && model.piecesOnTheBoard[square.x-3][square.y].getColor() == Color.EMPTY){
+                if (!model.isKingOfColorChecked(Color.BLACK) && !model.isSquareAttackedByColor(square.x-1, square.y, Color.WHITE) && !model.isSquareAttackedByColor(square.x-2, square.y, Color.WHITE)){
+                    this.listOfCandidateMoves.add(new Move(square, new Position(square.x - 2, square.y)));
+                }
+                
+            }
+            if (color == Color.BLACK && model.rightBlackRook.numberOfMoves == 0
+                    && model.piecesOnTheBoard[square.x+1][square.y].getColor() == Color.EMPTY
+                    && model.piecesOnTheBoard[square.x+2][square.y].getColor() == Color.EMPTY){
+                if (!model.isKingOfColorChecked(Color.BLACK) && !model.isSquareAttackedByColor(square.x+1, square.y, Color.WHITE) && !model.isSquareAttackedByColor(square.x+2, square.y, Color.WHITE)){
+                    this.listOfCandidateMoves.add(new Move(square, new Position(square.x + 2, square.y)));
                 }
             }
             
-            if ((this.color == Color.WHITE && model.rightWhiteRook.numberOfMoves == 0) || (this.color == Color.BLACK && model.rightBlackRook.numberOfMoves == 0)){
-                if (model.piecesOnTheBoard[this.square.x + 1][this.square.y].getColor() == Piece.Color.EMPTY
-                        && model.piecesOnTheBoard[this.square.x + 2][this.square.y].getColor() == Piece.Color.EMPTY){
-                    if (color == Piece.Color.WHITE){
-                        if (!model.isSquareAttackedByColor(square, Piece.Color.BLACK) && !model.isSquareAttackedByColor(new Position(square.x+1, square.y), Piece.Color.BLACK) && !model.isSquareAttackedByColor(new Position(square.x+2, square.y), Piece.Color.BLACK)){
-                            this.listOfCandidateMoves.add(new Move(this.square, new Position(this.square.x+2, this.square.y)));
-                        }
-                    } else if (color == Piece.Color.BLACK){
-                        if (!model.isSquareAttackedByColor(square, Piece.Color.WHITE) && !model.isSquareAttackedByColor(new Position(square.x+1, square.y), Piece.Color.WHITE) && !model.isSquareAttackedByColor(new Position(square.x+2, square.y), Piece.Color.WHITE)){
-                            this.listOfCandidateMoves.add(new Move(this.square, new Position(this.square.x+2, this.square.y)));
-                        }
-                    }
-                }
-            }
         }
     }
 }

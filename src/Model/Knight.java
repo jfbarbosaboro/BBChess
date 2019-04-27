@@ -56,24 +56,34 @@ public class Knight extends Piece{
         }
     }
     
-    //@Override
+    @Override
     public void createListOfCandidateMoves(){
         
-        Move m[] = {
-            new Move(square, new Position(square.x + 1,square.y +2)),
-            new Move(square, new Position(square.x + 1,square.y -2)),
-            new Move(square, new Position(square.x - 1,square.y +2)),
-            new Move(square, new Position(square.x - 1,square.y -2)),
-            new Move(square, new Position(square.x + 2,square.y +1)),
-            new Move(square, new Position(square.x + 2,square.y -1)),
-            new Move(square, new Position(square.x - 2,square.y +1)),
-            new Move(square, new Position(square.x - 2,square.y -1))
-        };
+        this.listOfCandidateMoves.clear();
         
-        for (Move m0 : m){
-            if (m0.getEnd().x < 8 && m0.getEnd().x > -1 && m0.getEnd().y < 8 && m0.getEnd().y > -1 && model.piecesOnTheBoard[m0.getEnd().x][m0.getEnd().y].color != color){
-                listOfCandidateMoves.add(m0);
-            }
+        if (square.x + 1 < 8 && square.y + 2 < 8 && model.piecesOnTheBoard[square.x+1][square.y+2].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x + 1, square.y + 2)));
+        }
+        if (square.x + 2 < 8 && square.y + 1 < 8 && model.piecesOnTheBoard[square.x+2][square.y+1].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x + 2, square.y + 1)));
+        }
+        if (square.x + 1 < 8 && square.y - 2 > -1 && model.piecesOnTheBoard[square.x+1][square.y-2].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x + 1, square.y - 2)));
+        }
+        if (square.x + 2 < 8 && square.y - 1 > -1 && model.piecesOnTheBoard[square.x+2][square.y-1].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x + 2, square.y - 1)));
+        }
+        if (square.x - 1 > -1 && square.y + 2 < 8 && model.piecesOnTheBoard[square.x-1][square.y+2].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x - 1, square.y + 2)));
+        }
+        if (square.x - 2 > -1 && square.y + 1 < 8 && model.piecesOnTheBoard[square.x-2][square.y+1].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x  - 2, square.y + 1)));
+        }
+        if (square.x - 1 > -1 && square.y - 2 > -1 && model.piecesOnTheBoard[square.x-1][square.y-2].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x - 1, square.y - 2)));
+        }
+        if (square.x - 2 > -1 && square.y - 1 > -1 && model.piecesOnTheBoard[square.x-2][square.y-1].getColor() != this.color){
+            this.listOfCandidateMoves.add(new Move(square, new Position(square.x - 2, square.y - 1)));
         }
     }
     
