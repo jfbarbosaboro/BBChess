@@ -13,7 +13,6 @@ import Model.Piece;
 import Model.Pawn;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import javax.swing.JDialog;
 
 public class BoardController implements MouseListener, MouseMotionListener{
 
@@ -23,6 +22,8 @@ public class BoardController implements MouseListener, MouseMotionListener{
   private Position ini;
   private Position end;
   private Move m;
+  private boolean isAgainstTheMachine;
+  private Piece.Color machineColor;
   
   
     public void addView (BoardView view){
@@ -34,6 +35,9 @@ public class BoardController implements MouseListener, MouseMotionListener{
     }
     
     public void runBoard() {
+        
+        setTheGameUp();
+        
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) ((dimension.getWidth() - view.getWidth()) / 2);
         int y = (int) ((dimension.getHeight() - view.getHeight()) / 2);
@@ -82,33 +86,17 @@ public class BoardController implements MouseListener, MouseMotionListener{
                 System.out.println("Black King is in check: " + bK);
                 
                 model.createListOfPossibleMoves();
+                view.repaint();
                 
-                if (model.listOfPossibleMoves.isEmpty()){
-                    if (model.getTurn() == Piece.Color.WHITE){
-                        if (model.isKingOfColorChecked(Piece.Color.WHITE)){
-                            //White was checkmated;
-                            System.out.println("White was checkmated.");
-                            JOptionPane.showMessageDialog(null, "White was checkmated!", "BBChess", JOptionPane.INFORMATION_MESSAGE);
-                        } else {
-                            //It's a draw.
-                            System.out.println("It's a draw.");
-                            JOptionPane.showMessageDialog(null, "It's a  draw.", "BBChess", JOptionPane.INFORMATION_MESSAGE);
-                        }
-                    } else {
-                        if (model.isKingOfColorChecked(Piece.Color.BLACK)){
-                            //Black was checkmated;
-                            System.out.println("Black was checkmated.");
-                            JOptionPane.showMessageDialog(null, "Black was checkmated!", "BBChess", JOptionPane.INFORMATION_MESSAGE);
-                        } else {
-                            //It's a draw.
-                            System.out.println("It's a draw.");
-                            JOptionPane.showMessageDialog(null, "It's a draw.", "BBChess", JOptionPane.INFORMATION_MESSAGE);
-                        }
-                    }
-                    model.init();
+                testWhetherIsFinished();
+                
+                if (isAgainstTheMachine && model.getTurn() == machineColor){
+                    model.makeMove(model.getRandomPossibleMove());
+                    model.createListOfPossibleMoves();
+                    view.repaint();
+                    testWhetherIsFinished();
                 }
                 
-                view.repaint();
                 moveState = 0;
             }
         }
@@ -127,6 +115,78 @@ public class BoardController implements MouseListener, MouseMotionListener{
         } else {
             return false;
         }
+    }
+    
+    public void testWhetherIsFinished(){
+        if (model.listOfPossibleMoves.isEmpty()){
+            if (model.getTurn() == Piece.Color.WHITE){
+                if (model.isKingOfColorChecked(Piece.Color.WHITE)){
+                    //White was checkmated;
+                    System.out.println("White was checkmated.");
+                    JOptionPane.showMessageDialog(null, "White was checkmated!", "BBChess", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    //It's a draw.
+                    System.out.println("It's a draw.");
+                    JOptionPane.showMessageDialog(null, "It's a  draw.", "BBChess", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else {
+                if (model.isKingOfColorChecked(Piece.Color.BLACK)){
+                    //Black was checkmated;
+                    System.out.println("Black was checkmated.");
+                    JOptionPane.showMessageDialog(null, "Black was checkmated!", "BBChess", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    //It's a draw.
+                    System.out.println("It's a draw.");
+                    JOptionPane.showMessageDialog(null, "It's a draw.", "BBChess", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+
+            String[] choices= {"Play again!", "Quit"};
+            int response = JOptionPane.showOptionDialog(null, "Do you want to play again ar quit?", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+            if (response != 0 && response != 1){
+                response = 0;
+            }
+            if (response == 0){
+                this.setTheGameUp();
+            } else {
+                System.exit(0);
+            }
+        }
+    }
+    
+    public void setTheGameUp(){
+        String[] againstWho = {"Play against a friend", "Play against the machine"};
+        int opt = JOptionPane.showOptionDialog(null, "Who do you want to play against?", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, againstWho, againstWho[0]);
+
+        if (opt != 0 && opt != 1){
+            opt = 1;
+        }
+        
+        if (opt == 1){
+            isAgainstTheMachine = true;
+        } else {
+            isAgainstTheMachine = false;
+        }
+
+        if (opt == 1){
+            String[] colors = {"White", "Black"};
+            int colorOfPlayer = JOptionPane.showOptionDialog(null, "Choose a color for you:", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, colors, colors[0]);
+            if (colorOfPlayer != 0 && colorOfPlayer != 1){
+                colorOfPlayer = 0;
+            }
+            if (colorOfPlayer == 1){
+               machineColor = Piece.Color.WHITE;
+               model.makeMove(model.getRandomPossibleMove());
+               model.createListOfPossibleMoves();
+               view.repaint();
+            } else {
+                machineColor = Piece.Color.BLACK;
+            }
+            return;
+        }
+        
+        model.init();
+        return;
     }
     
     public int getMoveState(){
@@ -165,8 +225,25 @@ public class BoardController implements MouseListener, MouseMotionListener{
     }
     
     public void undo(){
-        model.undo();
-        model.createListOfPossibleMoves();
+        
+        if (!isAgainstTheMachine){
+            model.undo();
+            model.createListOfPossibleMoves();
+        } else {
+            if (machineColor == Piece.Color.BLACK){
+                for (int i = 0; i < 2; i++){
+                    model.undo();
+                    model.createListOfPossibleMoves();
+                }
+            } else {
+                int count = 0;
+                while (model.lastPiecesMoved.size() > 1 && count < 2){
+                    model.undo();
+                    model.createListOfPossibleMoves();
+                    count++;
+                }
+            }
+        }
         view.repaint();
     }
     

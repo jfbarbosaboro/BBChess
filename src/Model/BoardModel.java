@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import Controller.BoardController;
+import java.util.Random;
 
 
 public class BoardModel implements Observer{
@@ -14,7 +15,7 @@ public class BoardModel implements Observer{
     public Piece[][] piecesOnTheBoard;
     public ArrayList<Move> listOfPossibleMoves = new ArrayList<Move>();
     private Piece.Color turn = Piece.Color.WHITE;
-    protected ArrayList<Piece> lastPiecesMoved = new ArrayList<Piece>();
+    public ArrayList<Piece> lastPiecesMoved = new ArrayList<Piece>();
     protected Piece whiteKing;// Pointer to White King.
     protected Piece blackKing; // Pointer to Black King.
     protected Piece leftWhiteRook;
@@ -224,7 +225,19 @@ public class BoardModel implements Observer{
                 }
             }
         }
-        
+    }
+    
+    public void setTheGameUp(){
+        this.controller.setTheGameUp();
+    }
+    
+    public Move getRandomPossibleMove(){
+        if (this.listOfPossibleMoves.isEmpty()){
+            return null;
+        } else {
+            Random rand = new Random();
+            return this.listOfPossibleMoves.get(rand.nextInt(this.listOfPossibleMoves.size()));
+        }
     }
     
     public boolean thereIsNothingToUndo(){

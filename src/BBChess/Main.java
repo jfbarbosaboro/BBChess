@@ -22,6 +22,7 @@ public class Main {
             model.addController(controller);
         
             controller.runBoard();
+            
         }
     });
   }

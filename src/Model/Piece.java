@@ -17,7 +17,6 @@ public abstract class Piece implements IMovable{
     public Piece ancientPiece;
     public boolean isOnTheBoard;
     
-    
     public enum Color{
         BLACK,
         WHITE,
@@ -29,7 +28,7 @@ public abstract class Piece implements IMovable{
         this.square = new Position(x,y);
         this.isPromotedPiece = isPromotedPiece;
         this.isOnTheBoard = true;
-        this.addModel(model);
+        this.model = model;
     }
     
     public abstract void draw(Graphics2D g);
