@@ -39,6 +39,7 @@ public class BoardModel implements Observer{
         
         whitePieces.clear();
         blackPieces.clear();
+        lastPiecesMoved.clear();
         
         this.whiteKing = new King(Piece.Color.WHITE, 4, 0, this);
         this.blackKing = new King(Piece.Color.BLACK, 4, 7, this);
@@ -84,8 +85,8 @@ public class BoardModel implements Observer{
         blackPieces.add(this.rightBlackRook);
         
         for (int i = 0; i < 8; i++){
-            for(int j = 2; j < 6; j++){
-                piecesOnTheBoard[i][j] = new Empty(Piece.Color.EMPTY, i, j, this);
+            for(int j = 0; j < 6; j++){
+                    piecesOnTheBoard[i][j] = new Empty(Piece.Color.EMPTY, i, j, this);
             }
         }
         

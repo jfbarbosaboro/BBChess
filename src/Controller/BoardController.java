@@ -70,9 +70,7 @@ public class BoardController implements MouseListener, MouseMotionListener{
                 
                 if ((model.piecesOnTheBoard[ini.x()][ini.y()] instanceof Pawn && model.piecesOnTheBoard[ini.x()][ini.y()].getColor() == Piece.Color.WHITE && end.y() == 7)
                     || (model.piecesOnTheBoard[ini.x()][ini.y()] instanceof Pawn && model.piecesOnTheBoard[ini.x()][ini.y()].getColor() == Piece.Color.BLACK && end.y() == 0)){
-                
                     m.setPromotionOption(getPromotionType());
-                    
                 }
                 
                 if (model.isMovePossible(m)){
@@ -88,15 +86,18 @@ public class BoardController implements MouseListener, MouseMotionListener{
                 model.createListOfPossibleMoves();
                 view.repaint();
                 
-                testWhetherIsFinished();
+                for (Move m : model.listOfPossibleMoves){
+                    System.out.println("Ini: ("+(m.getIni().x())+", "+(m.getIni().y())+") - End: ("+(m.getEnd().x())+", "+(m.getEnd().y())+")");
+                }
                 
-                if (isAgainstTheMachine && model.getTurn() == machineColor){
+                if (hasNotAlreadyFinished() && isAgainstTheMachine && model.getTurn() == machineColor){
+                    
                     model.makeMove(model.getRandomPossibleMove());
                     model.createListOfPossibleMoves();
                     view.repaint();
-                    testWhetherIsFinished();
+                    hasNotAlreadyFinished();
+                    view.repaint();
                 }
-                
                 moveState = 0;
             }
         }
@@ -117,7 +118,7 @@ public class BoardController implements MouseListener, MouseMotionListener{
         }
     }
     
-    public void testWhetherIsFinished(){
+    public boolean hasNotAlreadyFinished(){
         if (model.listOfPossibleMoves.isEmpty()){
             if (model.getTurn() == Piece.Color.WHITE){
                 if (model.isKingOfColorChecked(Piece.Color.WHITE)){
@@ -151,7 +152,9 @@ public class BoardController implements MouseListener, MouseMotionListener{
             } else {
                 System.exit(0);
             }
+            return false;
         }
+        return true;
     }
     
     public void setTheGameUp(){
@@ -174,11 +177,12 @@ public class BoardController implements MouseListener, MouseMotionListener{
             if (colorOfPlayer != 0 && colorOfPlayer != 1){
                 colorOfPlayer = 0;
             }
+            model.init();
             if (colorOfPlayer == 1){
-               machineColor = Piece.Color.WHITE;
-               model.makeMove(model.getRandomPossibleMove());
-               model.createListOfPossibleMoves();
-               view.repaint();
+                machineColor = Piece.Color.WHITE;
+                model.makeMove(model.getRandomPossibleMove());
+                model.createListOfPossibleMoves();
+                view.repaint();
             } else {
                 machineColor = Piece.Color.BLACK;
             }

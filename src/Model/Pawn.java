@@ -80,9 +80,8 @@ public class Pawn extends Piece{
                     this.listOfCandidateMoves.add(new Move(square, new Position(square.x, square.y+1)));
                 } else {
                     for (int opt = 0; opt < 4; opt++){
-                        Move aux = new Move(square, new Position(square.x, square.y+1));
-                        aux.setPromotionOption(opt);
-                        this.listOfCandidateMoves.add(aux);
+                        this.listOfCandidateMoves.add(new Move(square, new Position(square.x, square.y+1)));
+                        (this.listOfCandidateMoves.get(this.listOfCandidateMoves.size() - 1)).setPromotionOption(opt);
                     }
                 }
                 
@@ -91,24 +90,22 @@ public class Pawn extends Piece{
                 }
             }
             if (square.x + 1 < 8 && square.y + 1 < 8 && model.piecesOnTheBoard[square.x+1][square.y+1].getColor() == Color.BLACK){
-                if (square.y != 7){
+                if (square.y + 1 != 7){
                     this.listOfCandidateMoves.add(new Move(square, new Position(square.x+1, square.y+1)));
                 } else {
                     for (int opt = 0; opt < 4; opt++){
-                        Move aux = new Move(square, new Position(square.x+1, square.y+1));
-                        aux.setPromotionOption(opt);
-                        this.listOfCandidateMoves.add(aux);
+                        this.listOfCandidateMoves.add(new Move(square, new Position(square.x + 1, square.y+1)));
+                        (this.listOfCandidateMoves.get(this.listOfCandidateMoves.size() - 1)).setPromotionOption(opt);
                     }
                 }
             }
             if (square.x - 1 > -1 && square.y + 1 < 8 && model.piecesOnTheBoard[square.x-1][square.y+1].getColor() == Color.BLACK){
-                if (square.y != 7){
+                if (square.y + 1!= 7){
                     this.listOfCandidateMoves.add(new Move(square, new Position(square.x-1, square.y+1)));
                 } else {
                     for (int opt = 0; opt < 4; opt++){
-                        Move aux = new Move(square, new Position(square.x-1, square.y+1));
-                        aux.setPromotionOption(opt);
-                        this.listOfCandidateMoves.add(aux);
+                        this.listOfCandidateMoves.add(new Move(square, new Position(square.x-1, square.y+1)));
+                        (this.listOfCandidateMoves.get(this.listOfCandidateMoves.size() - 1)).setPromotionOption(opt);
                     }
                 }
             }
@@ -130,13 +127,12 @@ public class Pawn extends Piece{
         }
         if (this.color == Color.BLACK){
             if (square.y - 1 > -1 && model.piecesOnTheBoard[square.x][square.y-1].getColor() == Color.EMPTY){
-                if (square.y + 1 != 0){
+                if (square.y - 1 != 0){
                     this.listOfCandidateMoves.add(new Move(square, new Position(square.x, square.y-1)));
                 } else {
                     for (int opt = 0; opt < 4; opt++){
-                        Move aux = new Move(square, new Position(square.x, square.y-1));
-                        aux.setPromotionOption(opt);
-                        this.listOfCandidateMoves.add(aux);
+                        this.listOfCandidateMoves.add(new Move(square, new Position(square.x, square.y-1)));
+                        (this.listOfCandidateMoves.get(this.listOfCandidateMoves.size() - 1)).setPromotionOption(opt);
                     }
                 }
                 if (numberOfMoves == 0 && model.piecesOnTheBoard[square.x][square.y-2].getColor() == Color.EMPTY){
@@ -144,24 +140,22 @@ public class Pawn extends Piece{
                 }
             }
             if (square.x + 1 < 8 && square.y - 1 > -1 && model.piecesOnTheBoard[square.x+1][square.y-1].getColor() == Color.WHITE){
-                if (square.y + 1 != 0){
+                if (square.y - 1 != 0){
                     this.listOfCandidateMoves.add(new Move(square, new Position(square.x+1, square.y-1)));
                 } else {
                     for (int opt = 0; opt < 4; opt++){
-                        Move aux = new Move(square, new Position(square.x+1, square.y-1));
-                        aux.setPromotionOption(opt);
-                        this.listOfCandidateMoves.add(aux);
+                        this.listOfCandidateMoves.add(new Move(square, new Position(square.x+1, square.y-1)));
+                        (this.listOfCandidateMoves.get(this.listOfCandidateMoves.size() - 1)).setPromotionOption(opt);
                     }
                 }
             }
             if (square.x - 1 > -1 && square.y - 1 > -1 && model.piecesOnTheBoard[square.x-1][square.y-1].getColor() == Color.WHITE){
-                if (square.y + 1 != 0){
+                if (square.y - 1 != 0){
                     this.listOfCandidateMoves.add(new Move(square, new Position(square.x-1, square.y-1)));
                 } else {
                     for (int opt = 0; opt < 4; opt++){
-                        Move aux = new Move(square, new Position(square.x-1, square.y-1));
-                        aux.setPromotionOption(opt);
-                        this.listOfCandidateMoves.add(aux);
+                        this.listOfCandidateMoves.add(new Move(square, new Position(square.x-1, square.y-1)));
+                        (this.listOfCandidateMoves.get(this.listOfCandidateMoves.size() - 1)).setPromotionOption(opt);
                     }
                 }
             }
