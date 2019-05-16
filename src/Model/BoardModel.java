@@ -285,7 +285,7 @@ public class BoardModel implements Observer{
                 return true;
             }
             
-            if (this.piecesOnTheBoard[x+i][y+i].getColor() == c && (this.piecesOnTheBoard[x+i][y+i] instanceof Queen || this.piecesOnTheBoard[x+i][y+i] instanceof Bishop)){
+            if (this.piecesOnTheBoard[x+i][y+i].getColor() == c && (this.piecesOnTheBoard[x+i][y+i] instanceof Bishop || this.piecesOnTheBoard[x+i][y+i] instanceof Queen)){
                 return true;
             } else {
                 break;
@@ -304,7 +304,7 @@ public class BoardModel implements Observer{
                 return true;
             }
             
-            if (this.piecesOnTheBoard[x+i][y-i].getColor() == c && (this.piecesOnTheBoard[x+i][y-i] instanceof Queen || this.piecesOnTheBoard[x+i][y-i] instanceof Bishop)){
+            if (this.piecesOnTheBoard[x+i][y-i].getColor() == c && (this.piecesOnTheBoard[x+i][y-i] instanceof Bishop || this.piecesOnTheBoard[x+i][y-i] instanceof Queen)){
                 return true;
             } else {
                 break;
@@ -323,7 +323,7 @@ public class BoardModel implements Observer{
                 return true;
             }
             
-            if (this.piecesOnTheBoard[x-i][y+i].getColor() == c && (this.piecesOnTheBoard[x-i][y+i] instanceof Queen || this.piecesOnTheBoard[x-i][y+i] instanceof Bishop)){
+            if (this.piecesOnTheBoard[x-i][y+i].getColor() == c && (this.piecesOnTheBoard[x-i][y+i] instanceof Bishop || this.piecesOnTheBoard[x-i][y+i] instanceof Queen)){
                 return true;
             } else {
                 break;
@@ -342,7 +342,7 @@ public class BoardModel implements Observer{
                 return true;
             }
             
-            if (this.piecesOnTheBoard[x-i][y-i].getColor() == c && (this.piecesOnTheBoard[x-i][y-i] instanceof Queen || this.piecesOnTheBoard[x-i][y-i] instanceof Bishop)){
+            if (this.piecesOnTheBoard[x-i][y-i].getColor() == c && (this.piecesOnTheBoard[x-i][y-i] instanceof Bishop || this.piecesOnTheBoard[x-i][y-i] instanceof Queen)){
                 return true;
             } else {
                 break;
@@ -357,7 +357,7 @@ public class BoardModel implements Observer{
                 continue;
             }
             
-            if (this.piecesOnTheBoard[x+i][y].getColor() == c && (this.piecesOnTheBoard[x+i][y] instanceof Queen || this.piecesOnTheBoard[x+i][y] instanceof Rook)){
+            if (this.piecesOnTheBoard[x+i][y].getColor() == c && (this.piecesOnTheBoard[x+i][y] instanceof Rook || this.piecesOnTheBoard[x+i][y] instanceof Queen)){
                 return true;
             } else {
                 break;
@@ -372,7 +372,7 @@ public class BoardModel implements Observer{
                 continue;
             }
             
-            if (this.piecesOnTheBoard[x+i][y].getColor() == c && (this.piecesOnTheBoard[x+i][y] instanceof Queen || this.piecesOnTheBoard[x+i][y] instanceof Rook)){
+            if (this.piecesOnTheBoard[x+i][y].getColor() == c && (this.piecesOnTheBoard[x+i][y] instanceof Rook || this.piecesOnTheBoard[x+i][y] instanceof Queen)){
                 return true;
             } else {
                 break;
@@ -387,7 +387,7 @@ public class BoardModel implements Observer{
                 continue;
             }
             
-            if (this.piecesOnTheBoard[x][y+j].getColor() == c && (this.piecesOnTheBoard[x][y+j] instanceof Queen || this.piecesOnTheBoard[x][y+j] instanceof Rook)){
+            if (this.piecesOnTheBoard[x][y+j].getColor() == c && (this.piecesOnTheBoard[x][y+j] instanceof Rook || this.piecesOnTheBoard[x][y+j] instanceof Queen)){
                 return true;
             } else {
                 break;
@@ -402,7 +402,7 @@ public class BoardModel implements Observer{
                 continue;
             }
             
-            if (this.piecesOnTheBoard[x][y+j].getColor() == c && (this.piecesOnTheBoard[x][y+j] instanceof Queen || this.piecesOnTheBoard[x][y+j] instanceof Rook)){
+            if (this.piecesOnTheBoard[x][y+j].getColor() == c && (this.piecesOnTheBoard[x][y+j] instanceof Rook || this.piecesOnTheBoard[x][y+j] instanceof Queen)){
                 return true;
             } else {
                 break;
@@ -455,6 +455,57 @@ public class BoardModel implements Observer{
                 return true;
             }
         }
+      
+
+        
+        if (x + 1 < 8 && y + 1 < 8){
+            if (this.piecesOnTheBoard[x+1][y+1].getColor() == c && this.piecesOnTheBoard[x+1][y+1] instanceof King){
+                return true;
+            }
+        }
+        
+        if (x + 1 < 8 && y - 1 > -1){
+            if (this.piecesOnTheBoard[x+1][y-1].getColor() == c && this.piecesOnTheBoard[x+1][y-1] instanceof King){
+                return true;
+            }
+        }
+        
+        if (x - 1 > -1 && y + 1 < 8){
+            if (this.piecesOnTheBoard[x-1][y+1].getColor() == c && this.piecesOnTheBoard[x-1][y+1] instanceof King){
+                return true;
+            }
+        }
+        
+        if (x - 1 > -1 && y - 1 > -1){
+            if (this.piecesOnTheBoard[x-1][y-1].getColor() == c && this.piecesOnTheBoard[x-1][y-1] instanceof King){
+                return true;
+            }
+        }
+        
+        if (x + 1 < 8){
+            if (this.piecesOnTheBoard[x+1][y].getColor() == c && this.piecesOnTheBoard[x+1][y] instanceof King){
+                return true;
+            }
+        }
+        
+        if (x - 1 > -1){
+            if (this.piecesOnTheBoard[x-1][y].getColor() == c && this.piecesOnTheBoard[x-1][y] instanceof King){
+                return true;
+            }
+        }
+        
+        if (y + 1 < 8){
+            if (this.piecesOnTheBoard[x][y+1].getColor() == c && this.piecesOnTheBoard[x][y+1] instanceof King){
+                return true;
+            }
+        }
+        
+        if (y - 1 > -1){
+            if (this.piecesOnTheBoard[x][y-1].getColor() == c && this.piecesOnTheBoard[x][y-1] instanceof King){
+                return true;
+            }
+        }
+        
         
         return false;
     }
