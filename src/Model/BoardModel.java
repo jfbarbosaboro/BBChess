@@ -100,6 +100,7 @@ public class BoardModel implements Observer{
             piecesOnTheBoard[p.square.x][p.square.y] = p;
         }
         
+        this.turn = Piece.Color.WHITE;
         this.createListOfPossibleMoves();
     }
     

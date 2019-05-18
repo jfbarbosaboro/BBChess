@@ -145,7 +145,7 @@ public class BoardController implements MouseListener, MouseMotionListener{
             String[] choices= {"Play again!", "Quit"};
             int response = JOptionPane.showOptionDialog(null, "Do you want to play again ar quit?", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
             if (response != 0 && response != 1){
-                response = 0;
+                System.exit(0);
             }
             if (response == 0){
                 this.setTheGameUp();
@@ -158,11 +158,11 @@ public class BoardController implements MouseListener, MouseMotionListener{
     }
     
     public void setTheGameUp(){
-        String[] againstWho = {"Play against a friend", "Play against the machine"};
+        String[] againstWho = {"Play against a friend", "Play against randomness"};
         int opt = JOptionPane.showOptionDialog(null, "Who do you want to play against?", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, againstWho, againstWho[0]);
 
         if (opt != 0 && opt != 1){
-            opt = 1;
+            System.exit(0);
         }
         
         if (opt == 1){
@@ -175,9 +175,11 @@ public class BoardController implements MouseListener, MouseMotionListener{
             String[] colors = {"White", "Black"};
             int colorOfPlayer = JOptionPane.showOptionDialog(null, "Choose a color for you:", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, colors, colors[0]);
             if (colorOfPlayer != 0 && colorOfPlayer != 1){
-                colorOfPlayer = 0;
+                System.exit(0);
             }
             model.init();
+            view.setVisible(true);
+            view.repaint();
             if (colorOfPlayer == 1){
                 machineColor = Piece.Color.WHITE;
                 model.makeMove(model.getRandomPossibleMove());
