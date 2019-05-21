@@ -28,7 +28,6 @@ public class BoardModel implements Observer{
         this.whitePieces = new ArrayList<Piece>();
         this.blackPieces = new ArrayList<Piece>();
         this.piecesOnTheBoard = new Piece[8][8];
-        init();
     }
     
     public void addController(BoardController controller){
@@ -36,6 +35,8 @@ public class BoardModel implements Observer{
     }
     
     public void init() {
+        
+        this.controller.hasNotAlreadyFinished = true;
         
         whitePieces.clear();
         blackPieces.clear();
@@ -101,6 +102,9 @@ public class BoardModel implements Observer{
         }
         
         this.turn = Piece.Color.WHITE;
+        
+        this.controller.starClock();
+        
         this.createListOfPossibleMoves();
     }
     

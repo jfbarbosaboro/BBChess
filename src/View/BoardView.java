@@ -21,6 +21,7 @@ public class BoardView extends javax.swing.JFrame implements Observer {
   private Canvas canvas;  
   protected Position mouseCoord;
   protected BoardController controller;
+  protected Position lastPos = null;
   
   
   public BoardView(BoardModel model) {
@@ -64,6 +65,10 @@ public class BoardView extends javax.swing.JFrame implements Observer {
     
     public JLabel getPieceNameLabel(){
         return pieceNameLabel;
+    }
+    
+    public JLabel getTimeLabel() {
+        return timeLabel;
     }
     
     public void setPieceNameLabel(JLabel pieceNameLabel){
@@ -111,7 +116,7 @@ public class BoardView extends javax.swing.JFrame implements Observer {
         
     }
     
-    public void drawMouseSquare(Graphics2D g, boolean visibility) {
+    public void drawMouseSquare(Graphics2D g) {
         
         int width = 76;
         int height = 76;
@@ -122,18 +127,18 @@ public class BoardView extends javax.swing.JFrame implements Observer {
         drawSquarePerimeter(g, qx, qy, "0xAAD400");
     }
     
-    public void highlightCurrentPiece(Graphics2D g, boolean visibility) {
+    public void highlightCurrentPiece(Graphics2D g) {
         
         int moveState = controller.getMoveState();
         
         if(moveState == 1) {
             Position pos = controller.getIni();
             drawSquarePerimeter(g, pos.x(), 7-pos.y(), "0x6FA8DC");
-            //drawSquareArea(g, pos.x(), 7-pos.y(), "0x6FA8DC"); 
+            lastPos = pos;
         }
     }
     
-    public void drawPossibleMovesForPiece(Graphics2D g, boolean visibility) {
+    public void drawPossibleMovesForPiece(Graphics2D g) {
         int moveState = controller.getMoveState();
         
         if(moveState == 1) {
@@ -155,6 +160,10 @@ public class BoardView extends javax.swing.JFrame implements Observer {
         
     }
     
+    public void drawLastIniMove(Graphics2D g) {
+        
+    }
+    
     
   /** This method is called from within the constructor to
    * initialize the form.
@@ -173,6 +182,8 @@ public class BoardView extends javax.swing.JFrame implements Observer {
         jLabel1 = new javax.swing.JLabel();
         pieceNameLabel = new javax.swing.JLabel();
         undoButton = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        timeLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("BBChess");
@@ -210,6 +221,8 @@ public class BoardView extends javax.swing.JFrame implements Observer {
             }
         });
 
+        jLabel4.setText("Time:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -226,15 +239,19 @@ public class BoardView extends javax.swing.JFrame implements Observer {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(clickLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pieceNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pieceNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(timeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(55, 55, 55)
                 .addComponent(undoButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -251,9 +268,11 @@ public class BoardView extends javax.swing.JFrame implements Observer {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(clickLabel)))
+                            .addComponent(clickLabel)
+                            .addComponent(jLabel4)
+                            .addComponent(timeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(undoButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         getAccessibleContext().setAccessibleDescription("");
@@ -274,17 +293,19 @@ public class BoardView extends javax.swing.JFrame implements Observer {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPCanvas;
     private javax.swing.JLabel pieceNameLabel;
+    private javax.swing.JLabel timeLabel;
     private javax.swing.JButton undoButton;
     // End of variables declaration//GEN-END:variables
 
     
     @Override
     public void update(Observable o, Object arg) {
-        drawMouseSquare((Graphics2D) arg, true);
-        highlightCurrentPiece((Graphics2D) arg, true);
-        drawPossibleMovesForPiece((Graphics2D) arg, true);
+        drawMouseSquare((Graphics2D) arg);
+        highlightCurrentPiece((Graphics2D) arg);
+        drawPossibleMovesForPiece((Graphics2D) arg);
     }
 }
 

@@ -13,10 +13,11 @@ import Model.Piece;
 import Model.Pawn;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import Model.Clock;
 
 public class BoardController implements MouseListener, MouseMotionListener{
 
-  protected BoardView view;
+  public BoardView view;
   protected BoardModel model;
   private static int moveState = 0;
   private Position ini;
@@ -24,7 +25,13 @@ public class BoardController implements MouseListener, MouseMotionListener{
   private Move m;
   private boolean isAgainstTheMachine;
   private Piece.Color machineColor;
-  
+  public Clock globalTime;
+  public boolean hasNotAlreadyFinished = false;
+    
+    public void starClock(){
+        globalTime = new Clock(this.view, this);
+        globalTime.start();
+    }
   
     public void addView (BoardView view){
         this.view = view;
@@ -120,6 +127,7 @@ public class BoardController implements MouseListener, MouseMotionListener{
     
     public boolean hasNotAlreadyFinished(){
         if (model.listOfPossibleMoves.isEmpty()){
+            hasNotAlreadyFinished = false;
             if (model.getTurn() == Piece.Color.WHITE){
                 if (model.isKingOfColorChecked(Piece.Color.WHITE)){
                     //White was checkmated;
@@ -143,7 +151,7 @@ public class BoardController implements MouseListener, MouseMotionListener{
             }
 
             String[] choices= {"Play again!", "Quit"};
-            int response = JOptionPane.showOptionDialog(null, "Do you want to play again ar quit?", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+            int response = JOptionPane.showOptionDialog(null, "Do you want to play again or quit?", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
             if (response != 0 && response != 1){
                 System.exit(0);
             }
@@ -157,10 +165,10 @@ public class BoardController implements MouseListener, MouseMotionListener{
         return true;
     }
     
-    public void setTheGameUp(){
+    public void setTheGameUp(){     
         String[] againstWho = {"Play against a friend", "Play against randomness"};
         int opt = JOptionPane.showOptionDialog(null, "Who do you want to play against?", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, againstWho, againstWho[0]);
-
+        
         if (opt != 0 && opt != 1){
             System.exit(0);
         }
