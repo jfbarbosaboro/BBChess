@@ -2,6 +2,7 @@ package View;
 
 import Controller.BoardController;
 import Model.BoardModel;
+import Model.Move;
 import Model.Piece;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -160,7 +161,28 @@ public class BoardView extends javax.swing.JFrame implements Observer {
         
     }
     
-    public void drawLastIniMove(Graphics2D g) {
+    public void drawPastMove(Graphics2D g) {
+        Move whitePastMove = controller.getWhiteLastMove();
+        
+        Move blackPastMove = controller.getBlackLastMove();
+        
+        if(whitePastMove != null) {
+            drawSquarePerimeter(g, whitePastMove.getIni().x(), 7 - whitePastMove.getIni().y(), "0x556B2F");
+            System.out.println("View White Ini: x = " + whitePastMove.getIni().x() + ", y = " + whitePastMove.getIni().y());
+            drawSquarePerimeter(g, whitePastMove.getEnd().x(), 7 - whitePastMove.getEnd().y(), "0x556B2F");
+            System.out.println("View White End: x = " + whitePastMove.getEnd().x() + ", y = " + whitePastMove.getEnd().y());
+        } else {
+            System.out.println("White last move still null.");
+        }
+        
+        if(blackPastMove != null) {
+            drawSquarePerimeter(g, blackPastMove.getIni().x(),  7 - blackPastMove.getIni().y(), "0x8FBC8F");
+            System.out.println("View Black Ini: x = " + blackPastMove.getIni().x() + ", y = " + blackPastMove.getIni().y());
+            drawSquarePerimeter(g, blackPastMove.getEnd().x(),  7 - blackPastMove.getEnd().y(), "0x8FBC8F");
+            System.out.println("View Black Ini: x = " + blackPastMove.getEnd().x() + ", y = " + blackPastMove.getEnd().y());
+        } else {
+            System.out.println("Black last move still null.");
+        }
         
     }
     
@@ -306,6 +328,7 @@ public class BoardView extends javax.swing.JFrame implements Observer {
         drawMouseSquare((Graphics2D) arg);
         highlightCurrentPiece((Graphics2D) arg);
         drawPossibleMovesForPiece((Graphics2D) arg);
+        drawPastMove((Graphics2D) arg);
     }
 }
 
