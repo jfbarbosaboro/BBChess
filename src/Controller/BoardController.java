@@ -27,8 +27,8 @@ public class BoardController implements MouseListener, MouseMotionListener{
   private Piece.Color machineColor;
   public Clock globalTime;
   public boolean hasNotAlreadyFinished = false;
-  private ArrayList<Move> whiteLastMoves = new ArrayList<Move>();
-  private ArrayList<Move> blackLastMoves = new ArrayList<Move>();
+  private ArrayList<Move> ListOfMoves = new ArrayList<Move>();
+  private boolean onePieceHasBeenTaken = false;
   
   //private Move whiteLastMove = null;
   //private Move blackLastMove = null;
@@ -161,13 +161,17 @@ public class BoardController implements MouseListener, MouseMotionListener{
 
             String[] choices= {"Play again!", "Quit"};
             int response = JOptionPane.showOptionDialog(null, "Do you want to play again or quit?", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
-            if (response != 0 && response != 1){
+            
+            if (response != 0 && response != 1 && response != 2){
                 System.exit(0);
             }
-            if (response == 0){
-                this.setTheGameUp();
-            } else {
-                System.exit(0);
+            switch(response) {
+                case 0:
+                    this.setTheGameUp();
+                    break;
+                    
+                default:
+                    System.exit(0); 
             }
             return false;
         }
@@ -177,7 +181,7 @@ public class BoardController implements MouseListener, MouseMotionListener{
     public void setTheGameUp(){     
         String[] againstWho = {"Play against a friend", "Play against randomness"};
         int opt = JOptionPane.showOptionDialog(null, "Who do you want to play against?", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, againstWho, againstWho[0]);
-        
+        ListOfMoves.clear();
         if (opt != 0 && opt != 1){
             System.exit(0);
         }
@@ -197,17 +201,19 @@ public class BoardController implements MouseListener, MouseMotionListener{
             model.init();
             view.setVisible(true);
             view.repaint();
+
             if (colorOfPlayer == 1){
                 machineColor = Piece.Color.WHITE;
-                model.makeMove(model.getRandomPossibleMove());
+                Move mbot = model.getRandomPossibleMove(); // First movement of Bot!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                model.makeMove(mbot);
+                saveLastMove(mbot);
                 model.createListOfPossibleMoves();
                 view.repaint();
             } else {
                 machineColor = Piece.Color.BLACK;
             }
             
-            whiteLastMoves.clear();
-            blackLastMoves.clear();
+            
             
             return;
         }
@@ -304,64 +310,37 @@ public class BoardController implements MouseListener, MouseMotionListener{
     }
     
     private void saveLastMove(Move m) {
-        if(model.getTurn() == Piece.Color.WHITE) {
-            whiteLastMoves.add(m);
-        }    
-        if(model.getTurn() == Piece.Color.BLACK) {
-            blackLastMoves.add(m);
-        }
+        ListOfMoves.add(m);
         
         if(model.piecesOnTheBoard[m.getEnd().x()][m.getEnd().y()].getColor() != Piece.Color.EMPTY) { // Problems: erasing the last move of a taken piece; when bot starts as white: no past move recorded. 
-            /*
-            if(model.getTurn() == Piece.Color.WHITE) {
-                blackLastMoves.remove(blackLastMoves.size()-1);
-                blackLastMoves.add(null);
-        }    
-            if(model.getTurn() == Piece.Color.BLACK) {
-                whiteLastMoves.remove(whiteLastMoves.size()-1);
-                whiteLastMoves.add(null);
-            }
-            */
+            onePieceHasBeenTaken = true;
+        } else {
+            onePieceHasBeenTaken = false;
         }
-        
-        
     }
     
-    public Move getWhiteLastMove() {
-        if(whiteLastMoves.isEmpty()) {
-            whiteLastMoves.add(null);
-        }
-        
-        return whiteLastMoves.get(whiteLastMoves.size()-1);
+    public boolean getOnePieceHasBeenTaken() {
+        return onePieceHasBeenTaken;
     }
     
-    public Move getBlackLastMove() {
-        if(blackLastMoves.isEmpty()) {
-            blackLastMoves.add(null);
+    public Move getLastMove() {
+        if(ListOfMoves.isEmpty()) {
+            return null;
+        } else {
+            return ListOfMoves.get(ListOfMoves.size()-1);
         }
-        return blackLastMoves.get(blackLastMoves.size()-1);
     }
+    
     
     private void removeLastMove() {
         
         if(isAgainstTheMachine) {
-            whiteLastMoves.remove(whiteLastMoves.size()-1);
-            blackLastMoves.remove(blackLastMoves.size()-1);
+            ListOfMoves.remove(ListOfMoves.size()-1);
+            ListOfMoves.remove(ListOfMoves.size()-1);
             
-        
         } else {
-            
-            if(model.getTurn() == Piece.Color.WHITE) {
-                blackLastMoves.remove(blackLastMoves.size()-1);
-            }    
-            if(model.getTurn() == Piece.Color.BLACK) {
-                whiteLastMoves.remove(whiteLastMoves.size()-1);   
-            }
-            
+            ListOfMoves.remove(ListOfMoves.size()-1);
         }
-      
-        
     }
-    
-    
+ 
 }

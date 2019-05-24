@@ -161,29 +161,15 @@ public class BoardView extends javax.swing.JFrame implements Observer {
         
     }
     
-    public void drawPastMove(Graphics2D g) {
-        Move whitePastMove = controller.getWhiteLastMove();
+    public void drawLastMove(Graphics2D g) {
+        Move lastMove = controller.getLastMove();
         
-        Move blackPastMove = controller.getBlackLastMove();
-        
-        if(whitePastMove != null) {
-            drawSquarePerimeter(g, whitePastMove.getIni().x(), 7 - whitePastMove.getIni().y(), "0x556B2F");
-            System.out.println("View White Ini: x = " + whitePastMove.getIni().x() + ", y = " + whitePastMove.getIni().y());
-            drawSquarePerimeter(g, whitePastMove.getEnd().x(), 7 - whitePastMove.getEnd().y(), "0x556B2F");
-            System.out.println("View White End: x = " + whitePastMove.getEnd().x() + ", y = " + whitePastMove.getEnd().y());
+        if(lastMove != null) {
+            drawSquarePerimeter(g, lastMove.getIni().x(), 7 - lastMove.getIni().y(), "0x556B2F");
+            drawSquarePerimeter(g, lastMove.getEnd().x(), 7 - lastMove.getEnd().y(), "0x556B2F");
         } else {
-            System.out.println("White last move still null.");
+            System.out.println("List of moves still empty.");
         }
-        
-        if(blackPastMove != null) {
-            drawSquarePerimeter(g, blackPastMove.getIni().x(),  7 - blackPastMove.getIni().y(), "0x8FBC8F");
-            System.out.println("View Black Ini: x = " + blackPastMove.getIni().x() + ", y = " + blackPastMove.getIni().y());
-            drawSquarePerimeter(g, blackPastMove.getEnd().x(),  7 - blackPastMove.getEnd().y(), "0x8FBC8F");
-            System.out.println("View Black Ini: x = " + blackPastMove.getEnd().x() + ", y = " + blackPastMove.getEnd().y());
-        } else {
-            System.out.println("Black last move still null.");
-        }
-        
     }
     
     
@@ -328,7 +314,7 @@ public class BoardView extends javax.swing.JFrame implements Observer {
         drawMouseSquare((Graphics2D) arg);
         highlightCurrentPiece((Graphics2D) arg);
         drawPossibleMovesForPiece((Graphics2D) arg);
-        drawPastMove((Graphics2D) arg);
+        drawLastMove((Graphics2D) arg);
     }
 }
 
