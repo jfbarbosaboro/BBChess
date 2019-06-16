@@ -15,22 +15,23 @@ import java.util.logging.Logger;
  * @author Rafael Baquero
  */
 public class Clock extends Thread {
-    private int msec;
+    private long msec;
     private BoardView view;
     private BoardController controller;
+    private BoardModel model;
     
-    public Clock(BoardView view, BoardController controller) {
+    public Clock(BoardView view, BoardModel model, BoardController controller, long alreadyElapsedTime) {
         this.view = view;
         this.controller = controller;
+        this.model = model;
+        this.msec = alreadyElapsedTime;
     }
     
     @Override
     public void run() {
-        msec = 0;
         String printTime;
         while(controller.hasNotAlreadyFinished) {
-            printTime = String.format("%02d : %02d' %02d.%03d''", msec/3600000, (msec/60000)%60, (msec/1000)%60, msec%1000);
-            view.getTimeLabel().setText(printTime);
+            model.elapsedTime = msec;
             try {
                 Thread.sleep(1);
             } catch (InterruptedException ex) {

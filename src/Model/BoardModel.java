@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import Controller.BoardController;
+import java.io.Serializable;
 import java.util.Random;
 
 
-public class BoardModel implements Observer{
+public class BoardModel implements Observer, Serializable{
 
     public ArrayList<Piece> whitePieces;
     public ArrayList<Piece> blackPieces;
@@ -22,7 +23,8 @@ public class BoardModel implements Observer{
     protected Piece rightWhiteRook;
     protected Piece leftBlackRook;
     protected Piece rightBlackRook;
-    protected BoardController controller;
+    public long elapsedTime;
+    protected transient BoardController controller;
 
     public BoardModel()  {
         this.whitePieces = new ArrayList<Piece>();
@@ -103,7 +105,8 @@ public class BoardModel implements Observer{
         
         this.turn = Piece.Color.WHITE;
         
-        this.controller.starClock();
+        this.elapsedTime = 0;
+        this.controller.startClock(0);
         
         this.createListOfPossibleMoves();
     }

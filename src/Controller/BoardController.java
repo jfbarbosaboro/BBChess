@@ -18,7 +18,7 @@ import Model.Clock;
 public class BoardController implements MouseListener, MouseMotionListener{
 
   public BoardView view;
-  protected BoardModel model;
+  public BoardModel model;
   private static int moveState = 0;
   private Position ini;
   private Position end;
@@ -26,16 +26,21 @@ public class BoardController implements MouseListener, MouseMotionListener{
   private boolean isAgainstTheMachine;
   private Piece.Color machineColor;
   public Clock globalTime;
+  public ShowClock showClock;
   public boolean hasNotAlreadyFinished = false;
   private ArrayList<Move> ListOfMoves = new ArrayList<Move>();
   private boolean onePieceHasBeenTaken = false;
   
+  
   //private Move whiteLastMove = null;
   //private Move blackLastMove = null;
     
-    public void starClock(){
-        globalTime = new Clock(this.view, this);
+    public void startClock(long alreadyElapsedTime){
+        globalTime = new Clock(this.view, this.model, this, alreadyElapsedTime);
+        showClock = new ShowClock(this);
         globalTime.start();
+        showClock.start();
+        
     }
   
     public void addView (BoardView view){
@@ -47,6 +52,8 @@ public class BoardController implements MouseListener, MouseMotionListener{
     }
     
     public void runBoard() {
+        
+        //Test whether exists saved game in specified directory.
         
         setTheGameUp();
         

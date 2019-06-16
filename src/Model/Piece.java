@@ -3,8 +3,9 @@ package Model;
 import java.util.ArrayList;
 import java.awt.Graphics2D;
 import Model.Position;
+import java.io.Serializable;
 
-public abstract class Piece implements IMovable{
+public abstract class Piece implements IMovable, Serializable{
     
     protected int numberOfMoves = 0;
     protected Color color;

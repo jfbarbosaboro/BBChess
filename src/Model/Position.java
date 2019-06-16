@@ -5,11 +5,13 @@
  */
 package Model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author jose_fernando
  */
-public class Position {
+public class Position implements Serializable{
     
     protected int x;
     protected int y;
