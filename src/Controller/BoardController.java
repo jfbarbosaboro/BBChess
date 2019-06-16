@@ -333,10 +333,12 @@ public class BoardController implements MouseListener, MouseMotionListener{
     
     
     private void removeLastMove() {
-        
+        if(ListOfMoves.size() == 1 && machineColor == Piece.Color.WHITE) {
+            return;
+        } 
         if(isAgainstTheMachine) {
             ListOfMoves.remove(ListOfMoves.size()-1);
-            ListOfMoves.remove(ListOfMoves.size()-1);
+            ListOfMoves.remove(ListOfMoves.size()-1);        
             
         } else {
             ListOfMoves.remove(ListOfMoves.size()-1);
