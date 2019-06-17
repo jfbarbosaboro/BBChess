@@ -187,7 +187,7 @@ public class BoardController implements MouseListener, MouseMotionListener, Seri
     }
     
     public boolean ResumeSavedGame(){
-        String[] resumeOption = {"Resume saved game", "Start new game"};
+        String[] resumeOption = {"Resume last saved game", "Start new game"};
         int opt = JOptionPane.showOptionDialog(null, "There is a saved game. What do you want to do?", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, resumeOption, resumeOption[0]);
         if (opt != 0 && opt != 1){
             System.exit(0);
