@@ -16,6 +16,11 @@ public class Queen  extends Piece{
 
     public Queen(Piece.Color color, int x, int y, boolean p, BoardModel model)  {
         super(color, x, y, p, model);
+        setImages();
+    }
+    
+    @Override
+    public void setImages(){
         if(this.color == Piece.Color.BLACK){
             try{
                 bQueenImg = ImageIO.read(new File(bQueenImgPath));

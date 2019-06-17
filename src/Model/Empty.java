@@ -10,6 +10,11 @@ public class Empty extends Piece{
     }
     
     @Override
+    public void setImages(){
+        
+    }
+    
+    @Override
     public void draw(Graphics2D g) {}
     
     @Override

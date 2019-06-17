@@ -25,6 +25,10 @@ public class King extends Piece{
 
     public King(Piece.Color color, int x, int y, BoardModel model)  {
         super(color, x, y, false, model);
+        setImages();
+    }
+    
+    public void setImages(){
         if(this.color == Piece.Color.BLACK){
             try{
                 bKingImg = ImageIO.read(new File(bKingImgPath));

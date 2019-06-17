@@ -7,6 +7,8 @@ package Controller;
 
 import Model.BoardModel;
 import View.BoardView;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,10 +24,16 @@ public class ShowClock extends Thread{
     
     public void run(){
         while(true){
-            this.controller.view.getTimeLabel().setText(String.format("%02d : %02d' %02d.%03d''", this.controller.model.elapsedTime/3600000,
-                                                                                                  (this.controller.model.elapsedTime/60000)%60,
-                                                                                                  (this.controller.model.elapsedTime/1000)%60,
-                                                                                                  this.controller.model.elapsedTime%1000));
+            this.controller.view.getTimeLabel().setText(String.format("%02d : %02d' %02d.%01d''", this.controller.model.elapsedTime/36000,
+                                                                                                  (this.controller.model.elapsedTime/600)%60,
+                                                                                                  (this.controller.model.elapsedTime/10)%60,
+                                                                                                  this.controller.model.elapsedTime%10));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ShowClock.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
     }
 }

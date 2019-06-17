@@ -19,6 +19,11 @@ public class Pawn extends Piece{
 
     public Pawn(Color color, int x, int y, BoardModel model){
         super(color, x, y, false, model);
+        setImages();
+    }
+    
+    @Override
+    public void setImages(){
         if(color == Piece.Color.BLACK){
             try{
                 bPawnImg = ImageIO.read(new File(bPawnImgPath));

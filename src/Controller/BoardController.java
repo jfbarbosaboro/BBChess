@@ -14,26 +14,27 @@ import Model.Pawn;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import Model.Clock;
+import java.io.Serializable;
 
-public class BoardController implements MouseListener, MouseMotionListener{
+public class BoardController implements MouseListener, MouseMotionListener, Serializable{
 
-  public BoardView view;
-  public BoardModel model;
-  private static int moveState = 0;
-  private Position ini;
-  private Position end;
-  private Move m;
-  private boolean isAgainstTheMachine;
-  private Piece.Color machineColor;
-  public Clock globalTime;
-  public ShowClock showClock;
-  public boolean hasNotAlreadyFinished = false;
-  private ArrayList<Move> ListOfMoves = new ArrayList<Move>();
-  private boolean onePieceHasBeenTaken = false;
-  
-  
-  //private Move whiteLastMove = null;
-  //private Move blackLastMove = null;
+    public transient BoardView view;
+    public transient BoardModel model;
+    private transient Position ini;
+    private transient Position end;
+    private transient Move m;
+    public transient ShowClock showClock;
+    public transient Clock globalTime;
+    private transient boolean onePieceHasBeenTaken = false;
+
+    private static int moveState = 0;
+    private boolean isAgainstTheMachine;
+    private Piece.Color machineColor;
+    private ArrayList<Move> ListOfMoves = new ArrayList<Move>();
+    public boolean hasNotAlreadyFinished = false;
+
+    //private Move whiteLastMove = null;
+    //private Move blackLastMove = null;
     
     public void startClock(long alreadyElapsedTime){
         globalTime = new Clock(this.view, this.model, this, alreadyElapsedTime);
@@ -51,11 +52,11 @@ public class BoardController implements MouseListener, MouseMotionListener{
         this.model = model;
     }
     
-    public void runBoard() {
+    public void runBoard(boolean existsSavedGame) {
         
         //Test whether exists saved game in specified directory.
         
-        setTheGameUp();
+        setTheGameUp(existsSavedGame);
         
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) ((dimension.getWidth() - view.getWidth()) / 2);
@@ -174,7 +175,7 @@ public class BoardController implements MouseListener, MouseMotionListener{
             }
             switch(response) {
                 case 0:
-                    this.setTheGameUp();
+                    this.setTheGameUp(false);
                     break;
                     
                 default:
@@ -185,7 +186,35 @@ public class BoardController implements MouseListener, MouseMotionListener{
         return true;
     }
     
-    public void setTheGameUp(){     
+    public boolean ResumeSavedGame(){
+        String[] resumeOption = {"Resume saved game", "Start new game"};
+        int opt = JOptionPane.showOptionDialog(null, "There is a saved game. What do you want to do?", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, resumeOption, resumeOption[0]);
+        if (opt != 0 && opt != 1){
+            System.exit(0);
+        }
+        if (opt == 0) {
+            model.initSavedGame();
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public void setTheGameUp(boolean existsSavedGame){
+        
+        if (existsSavedGame){
+            if(ResumeSavedGame()){
+                for (int i = 0; i < 8; i++){
+                    for (int j = 0; j < 8; j++){
+                        model.piecesOnTheBoard[i][j].setImages();
+                    }
+                }
+                view.setVisible(true);
+                view.repaint();
+                return;
+            }
+        }
+        
         String[] againstWho = {"Play against a friend", "Play against randomness"};
         int opt = JOptionPane.showOptionDialog(null, "Who do you want to play against?", "BBChess", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, againstWho, againstWho[0]);
         ListOfMoves.clear();

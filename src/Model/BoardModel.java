@@ -24,7 +24,7 @@ public class BoardModel implements Observer, Serializable{
     protected Piece leftBlackRook;
     protected Piece rightBlackRook;
     public long elapsedTime;
-    protected transient BoardController controller;
+    public BoardController controller;
 
     public BoardModel()  {
         this.whitePieces = new ArrayList<Piece>();
@@ -109,6 +109,11 @@ public class BoardModel implements Observer, Serializable{
         this.controller.startClock(0);
         
         this.createListOfPossibleMoves();
+    }
+    
+    public void initSavedGame(){
+        this.controller.startClock(elapsedTime);
+        
     }
     
     public Piece findPiece(int x, int y) {
@@ -237,7 +242,7 @@ public class BoardModel implements Observer, Serializable{
     }
     
     public void setTheGameUp(){
-        this.controller.setTheGameUp();
+        this.controller.setTheGameUp(false);
     }
     
     public Move getRandomPossibleMove(){

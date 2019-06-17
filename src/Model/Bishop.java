@@ -15,6 +15,11 @@ public class Bishop extends Piece{
 
     public Bishop(Piece.Color color, int x, int y, boolean p, BoardModel model)  {
         super(color, x, y, p, model);
+        setImages();
+    }
+    
+    @Override
+    public void setImages(){
         if(this.color == Piece.Color.BLACK){
             try{
                 bBishopImg = ImageIO.read(new File(bBishopImgPath));

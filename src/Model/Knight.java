@@ -17,6 +17,11 @@ public class Knight extends Piece{
 
     public Knight(Piece.Color color, int x, int y, boolean p, BoardModel model)  {
         super(color, x, y, p, model);
+        setImages();
+    }
+    
+    @Override
+    public void setImages(){
         if(color == Piece.Color.BLACK){
             try{
                 bKnightImg = ImageIO.read(new File(bKnightImgPath));

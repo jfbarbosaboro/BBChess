@@ -33,7 +33,7 @@ public class Clock extends Thread {
         while(controller.hasNotAlreadyFinished) {
             model.elapsedTime = msec;
             try {
-                Thread.sleep(1);
+                Thread.sleep(100);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Clock.class.getName()).log(Level.SEVERE, null, ex);
             }

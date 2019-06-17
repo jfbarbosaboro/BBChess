@@ -24,6 +24,8 @@ public abstract class Piece implements IMovable, Serializable{
         EMPTY
     }
     
+    public abstract void setImages();
+    
     public Piece(Color color, int x, int y, boolean isPromotedPiece, BoardModel model)  {
         this.color = color;
         this.square = new Position(x,y);
