@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class Queen  extends Piece{
     
-    protected final static String wQueenImgPath = "img/pieces/w-queen.png";
+    protected final String wQueenImgPath = "img/pieces/w-queen.png";
     protected static BufferedImage wQueenImg = null;
-    protected final static String bQueenImgPath = "img/pieces/b-queen.png";
+    protected final String bQueenImgPath = "img/pieces/b-queen.png";
     protected static BufferedImage bQueenImg = null; 
 
     public Queen(Piece.Color color, int x, int y, boolean p, BoardModel model)  {

@@ -23,7 +23,7 @@ public class ShowClock extends Thread{
     }
     
     public void run(){
-        while(true){
+        while(controller.hasNotFinishedYet){
             this.controller.view.getTimeLabel().setText(String.format("%02d : %02d' %02d.%01d''", this.controller.model.elapsedTime/36000,
                                                                                                   (this.controller.model.elapsedTime/600)%60,
                                                                                                   (this.controller.model.elapsedTime/10)%60,

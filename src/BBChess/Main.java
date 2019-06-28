@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -94,6 +95,9 @@ public class Main {
                                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         } else {
+                            finalModel.controller.autoSave.interrupt();
+                            File file = new File(".\\LastGame.bin");
+                            file.delete();
                             System.exit(0);
                         }
                         

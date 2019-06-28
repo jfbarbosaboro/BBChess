@@ -11,8 +11,8 @@ import java.util.Random;
 
 public class BoardModel implements Observer, Serializable{
 
-    public ArrayList<Piece> whitePieces;
-    public ArrayList<Piece> blackPieces;
+    public ArrayList<Piece> whitePieces = new ArrayList<Piece>();
+    public ArrayList<Piece> blackPieces = new ArrayList<Piece>();
     public Piece[][] piecesOnTheBoard;
     public ArrayList<Move> listOfPossibleMoves = new ArrayList<Move>();
     private Piece.Color turn = Piece.Color.WHITE;
@@ -27,8 +27,6 @@ public class BoardModel implements Observer, Serializable{
     public BoardController controller;
 
     public BoardModel()  {
-        this.whitePieces = new ArrayList<Piece>();
-        this.blackPieces = new ArrayList<Piece>();
         this.piecesOnTheBoard = new Piece[8][8];
     }
     
@@ -38,7 +36,7 @@ public class BoardModel implements Observer, Serializable{
     
     public void init() {
         
-        this.controller.hasNotAlreadyFinished = true;
+        this.controller.hasNotFinishedYet = true;
         
         whitePieces.clear();
         blackPieces.clear();
@@ -109,11 +107,13 @@ public class BoardModel implements Observer, Serializable{
         this.controller.startClock(0);
         
         this.createListOfPossibleMoves();
+        
+        this.controller.startAutoSave();
     }
     
     public void initSavedGame(){
         this.controller.startClock(elapsedTime);
-        
+        this.controller.startAutoSave();
     }
     
     public Piece findPiece(int x, int y) {

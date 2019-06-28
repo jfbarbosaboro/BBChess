@@ -30,7 +30,7 @@ public class Clock extends Thread {
     @Override
     public void run() {
         String printTime;
-        while(controller.hasNotAlreadyFinished) {
+        while(controller.hasNotFinishedYet) {
             model.elapsedTime = msec;
             try {
                 Thread.sleep(100);

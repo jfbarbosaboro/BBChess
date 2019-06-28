@@ -25,13 +25,14 @@ public class BoardController implements MouseListener, MouseMotionListener, Seri
     private transient Move m;
     public transient ShowClock showClock;
     public transient Clock globalTime;
+    public transient AutoSave autoSave;
     private transient boolean onePieceHasBeenTaken = false;
 
     private static int moveState = 0;
     private boolean isAgainstTheMachine;
     private Piece.Color machineColor;
     private ArrayList<Move> ListOfMoves = new ArrayList<Move>();
-    public boolean hasNotAlreadyFinished = false;
+    public boolean hasNotFinishedYet = false;
 
     //private Move whiteLastMove = null;
     //private Move blackLastMove = null;
@@ -41,7 +42,11 @@ public class BoardController implements MouseListener, MouseMotionListener, Seri
         showClock = new ShowClock(this);
         globalTime.start();
         showClock.start();
-        
+    }
+    
+    public void startAutoSave(){
+        autoSave = new AutoSave(this.model, this);
+        autoSave.start();
     }
   
     public void addView (BoardView view){
@@ -144,7 +149,7 @@ public class BoardController implements MouseListener, MouseMotionListener, Seri
     
     public boolean hasNotAlreadyFinished(){
         if (model.listOfPossibleMoves.isEmpty()){
-            hasNotAlreadyFinished = false;
+            hasNotFinishedYet = false;
             if (model.getTurn() == Piece.Color.WHITE){
                 if (model.isKingOfColorChecked(Piece.Color.WHITE)){
                     //White was checkmated;
@@ -208,6 +213,12 @@ public class BoardController implements MouseListener, MouseMotionListener, Seri
                     for (int j = 0; j < 8; j++){
                         model.piecesOnTheBoard[i][j].setImages();
                     }
+                }
+                for (Piece p : model.whitePieces){
+                    p.setImages();
+                }
+                for(Piece p : model.blackPieces){
+                    p.setImages();
                 }
                 view.setVisible(true);
                 view.repaint();
